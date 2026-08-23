@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Junior Railers//E9 Schedule Sync Test//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:e9-sync-test-20260901@juniorrailers.com
+DTSTAMP:20260823T120000Z
+DTSTART:20260901T170000Z
+DTEND:20260901T183000Z
+SUMMARY:E9 Sync Test Event
+LOCATION:Test Rink
+DESCRIPTION:This is a test event to confirm the hosted .ics feed is fetchable as raw calendar content.
+SEQUENCE:0
+END:VEVENT
+END:VCALENDAR
