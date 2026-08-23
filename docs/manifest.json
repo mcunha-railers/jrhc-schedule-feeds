@@ -1,0 +1,86 @@
+{
+  "Junior Railers 13 - Elite": {
+    "filename": "railers-13-elite.ics",
+    "game_count": 28
+  },
+  "Junior Railers 13 - Select 1": {
+    "filename": "railers-13-select-1.ics",
+    "game_count": 31
+  },
+  "Junior Railers 13 - Select 2": {
+    "filename": "railers-13-select-2.ics",
+    "game_count": 31
+  },
+  "Junior Railers 14 - Select 1": {
+    "filename": "railers-14-select-1.ics",
+    "game_count": 30
+  },
+  "Junior Railers 14 - Select 2": {
+    "filename": "railers-14-select-2.ics",
+    "game_count": 28
+  },
+  "Junior Railers 15 - Elite": {
+    "filename": "railers-15-elite.ics",
+    "game_count": 30
+  },
+  "Junior Railers 15 - Select": {
+    "filename": "railers-15-select.ics",
+    "game_count": 30
+  },
+  "Junior Railers 16 - Elite": {
+    "filename": "railers-16-elite.ics",
+    "game_count": 32
+  },
+  "Junior Railers 16 - Select 1": {
+    "filename": "railers-16-select-1.ics",
+    "game_count": 30
+  },
+  "Junior Railers 16 - Select 2": {
+    "filename": "railers-16-select-2.ics",
+    "game_count": 30
+  },
+  "Junior Railers 17 - Elite": {
+    "filename": "railers-17-elite.ics",
+    "game_count": 30
+  },
+  "Junior Railers 17 - Select 1": {
+    "filename": "railers-17-select-1.ics",
+    "game_count": 32
+  },
+  "Junior Railers 18 - Elite": {
+    "filename": "railers-18-elite.ics",
+    "game_count": 28
+  },
+  "Junior Railers 18 - Select": {
+    "filename": "railers-18-select.ics",
+    "game_count": 27
+  },
+  "Junior Railers 19 - Elite": {
+    "filename": "railers-19-elite.ics",
+    "game_count": 27
+  },
+  "Junior Railers 19 - Select": {
+    "filename": "railers-19-select.ics",
+    "game_count": 28
+  },
+  "Junior Railers U14F - Elite": {
+    "filename": "railers-u14f-elite.ics",
+    "game_count": 14
+  },
+  "Junior Railers U14F - Select": {
+    "filename": "railers-u14f-select.ics",
+    "game_count": 12
+  },
+  "Junior Railers U15 - Select": {
+    "filename": "railers-u15-select.ics",
+    "game_count": 11
+  },
+  "Junior Railers U16 - Select": {
+    "filename": "railers-u16-select.ics",
+    "game_count": 12
+  },
+  "Junior Railers U18 - Select": {
+    "filename": "railers-u18-select.ics",
+    "game_count": 12
+  }
+}
