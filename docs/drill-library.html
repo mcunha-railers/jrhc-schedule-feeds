@@ -1,4 +1,69 @@
+<meta charset="utf-8">
 <title>Drill Library</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  #gate {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--rink-navy, #0f2c52);
+    padding: 1.5rem;
+  }
+
+  #gate .box {
+    width: 100%;
+    max-width: 22rem;
+    background: var(--surface, #fff);
+    border-radius: 12px;
+    padding: 2rem 1.75rem;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  }
+  #gate h2 {
+    margin: 0 0 0.4rem;
+    font-family: "Teko", "Arial Narrow", sans-serif;
+    font-size: 1.8rem;
+    color: var(--ink, #0f2c52);
+  }
+  #gate p {
+    margin: 0 0 1.1rem;
+    font-size: 0.85rem;
+    color: var(--steel, #52627a);
+    font-family: "Public Sans", sans-serif;
+  }
+  #gate input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--line, #d3dde6);
+    border-radius: 7px;
+    font-size: 0.95rem;
+    margin-bottom: 0.7rem;
+    box-sizing: border-box;
+    font-family: "Public Sans", sans-serif;
+  }
+  #gate button {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: none;
+    border-radius: 7px;
+    background: var(--faceoff-red, #2360b5);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: "Public Sans", sans-serif;
+  }
+  #gate .err {
+    color: #c2453d;
+    font-size: 0.8rem;
+    margin-top: 0.6rem;
+    min-height: 1em;
+    font-family: "Public Sans", sans-serif;
+  }
+</style>
 <style>
   :root {
     /* Junior Railers brand: navy #0f2c52, accent blue #2360b5, slate #707e8c/#adb2b6 */
@@ -448,6 +513,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 
+<div id="gate">
+  <div class="box">
+    <h2>Drill Library</h2>
+    <p>Junior Railers coaches only — enter the password to continue.</p>
+    <input type="password" id="gatePw" placeholder="Password" autocomplete="off">
+    <button type="button" id="gateBtn">Unlock</button>
+    <div class="err" id="gateErr"></div>
+  </div>
+</div>
+
+<div id="site-content" style="display:none">
 <header class="top">
   <div class="top-inner">
     <p class="eyebrow">Junior Railers Hockey Club &middot; 2011 &amp; 2014 Select</p>
@@ -476,6 +552,52 @@
   Compiled from Junior Railers 2011 Select and 2014 Select practice notes across multiple seasons. Maintained by Matt Cunha. Last updated September 2, 2026 &mdash; drills are added as they're used, so check back for new additions.
 
 </footer>
+</div>
+
+<script>
+(function () {
+  var HASH = "978d657be20a82b87941d32cb19f89140c2996a17c3cf5ce51843b50fa5074f2";
+  var STORE_KEY = "jrhc-drill-library-unlocked";
+
+  function sha256(text) {
+    var enc = new TextEncoder().encode(text);
+    return crypto.subtle.digest("SHA-256", enc).then(function (buf) {
+      return Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+    });
+  }
+
+  function reveal() {
+    document.getElementById("gate").style.display = "none";
+    document.getElementById("site-content").style.display = "";
+  }
+
+  function tryUnlock() {
+    var val = document.getElementById("gatePw").value;
+    sha256(val).then(function (digest) {
+      if (digest === HASH) {
+        try { localStorage.setItem(STORE_KEY, "1"); } catch (e) {}
+        reveal();
+      } else {
+        document.getElementById("gateErr").textContent = "That's not it — try again.";
+      }
+    });
+  }
+
+  var already = false;
+  try { already = localStorage.getItem(STORE_KEY) === "1"; } catch (e) {}
+  if (already) {
+    reveal();
+  } else {
+    document.getElementById("gateBtn").addEventListener("click", tryUnlock);
+    document.getElementById("gatePw").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") tryUnlock();
+    });
+    document.getElementById("gatePw").focus();
+  }
+})();
+</script>
 
 <script>
 const DATA = [
