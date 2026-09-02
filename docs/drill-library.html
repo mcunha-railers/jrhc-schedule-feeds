@@ -1,0 +1,694 @@
+<title>Drill Library</title>
+<style>
+  :root {
+    --ice: #f4f7fa;
+    --surface: #ffffff;
+    --ink: #10202f;
+    --steel: #51687c;
+    --steel-soft: #7c8fa0;
+    --line: #d7e1e8;
+    --rink-navy: #0f2a44;
+    --rink-navy-deep: #081826;
+    --faceoff-red: #c23b32;
+    --faceoff-red-ink: #a12e26;
+    --crease-blue: #1c5d93;
+    --frost: #e7eef3;
+    --focus-ring: #1c5d93;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ice: #0b1720;
+      --surface: #121f2b;
+      --ink: #eaf1f6;
+      --steel: #9fb2c2;
+      --steel-soft: #71879a;
+      --line: #24384a;
+      --rink-navy: #081420;
+      --rink-navy-deep: #050d15;
+      --faceoff-red: #e2564a;
+      --faceoff-red-ink: #f0776d;
+      --crease-blue: #5ea3de;
+      --frost: #1b2c3b;
+      --focus-ring: #5ea3de;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ice: #0b1720;
+    --surface: #121f2b;
+    --ink: #eaf1f6;
+    --steel: #9fb2c2;
+    --steel-soft: #71879a;
+    --line: #24384a;
+    --rink-navy: #081420;
+    --rink-navy-deep: #050d15;
+    --faceoff-red: #e2564a;
+    --faceoff-red-ink: #f0776d;
+    --crease-blue: #5ea3de;
+    --frost: #1b2c3b;
+    --focus-ring: #5ea3de;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ice);
+    color: var(--ink);
+    font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, .num {
+    font-family: "Teko", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+
+  a { color: var(--crease-blue); }
+  a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  .mono {
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+
+  /* ---------- header ---------- */
+
+  header.top {
+    background: linear-gradient(180deg, var(--rink-navy) 0%, var(--rink-navy-deep) 100%);
+    color: #eef4f9;
+    position: relative;
+    padding: 2.6rem 1.5rem 2.1rem;
+    overflow: hidden;
+  }
+
+  header.top::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 3px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--faceoff-red) 0 28px,
+      transparent 28px 56px
+    );
+    opacity: 0.85;
+  }
+
+  .top-inner {
+    max-width: 68rem;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #9fb7cc;
+    margin: 0 0 0.6rem;
+  }
+
+  h1.title {
+    margin: 0 0 0.5rem;
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    line-height: 0.95;
+    color: #fff;
+  }
+
+  .top-sub {
+    max-width: 40rem;
+    color: #c3d5e3;
+    font-size: 1rem;
+    margin: 0 0 1.6rem;
+  }
+
+  .stat-row {
+    display: flex;
+    gap: 1.9rem;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat .num {
+    font-size: 2.1rem;
+    line-height: 1;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat .num em {
+    font-style: normal;
+    color: var(--faceoff-red);
+  }
+
+  .stat .label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8fa6ba;
+    margin-top: 0.15rem;
+  }
+
+  /* ---------- controls ---------- */
+
+  .controls {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--ice) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .controls-inner {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    gap: 0.9rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .search-wrap {
+    position: relative;
+    flex: 1 1 15rem;
+    min-width: 11rem;
+  }
+
+  .search-wrap svg {
+    position: absolute;
+    left: 0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    stroke: var(--steel);
+    pointer-events: none;
+  }
+
+  #search {
+    width: 100%;
+    padding: 0.55rem 0.8rem 0.55rem 2rem;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.92rem;
+  }
+
+  #search::placeholder { color: var(--steel-soft); }
+
+  .chips {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--steel);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .chip:hover { border-color: var(--crease-blue); color: var(--crease-blue); }
+
+  .chip.active {
+    background: var(--faceoff-red);
+    border-color: var(--faceoff-red);
+    color: #fff;
+  }
+
+  .result-note {
+    max-width: 68rem;
+    margin: 0.7rem auto 0;
+    padding: 0 1.5rem;
+    font-size: 0.82rem;
+    color: var(--steel);
+    font-family: "IBM Plex Mono", monospace;
+  }
+
+  /* ---------- main / sections ---------- */
+
+  main {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 1.6rem 1.5rem 4rem;
+  }
+
+  section.category {
+    padding-top: 2.6rem;
+    scroll-margin-top: 4.7rem;
+  }
+
+  .cat-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 0.6rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .cat-head .num {
+    font-size: 2.1rem;
+    color: var(--faceoff-red);
+    min-width: 2.1ch;
+  }
+
+  .cat-head h2 {
+    margin: 0;
+    font-size: 1.7rem;
+    flex: 1;
+  }
+
+  .cat-count {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.75rem;
+    color: var(--steel);
+    white-space: nowrap;
+  }
+
+  .cat-note {
+    font-size: 0.86rem;
+    color: var(--steel);
+    margin: -0.6rem 0 1.1rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+    gap: 0.8rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.9rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .card h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.15;
+  }
+
+  .card p.summary {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--steel);
+  }
+
+  .card .video-link {
+    font-size: 0.8rem;
+    font-family: "IBM Plex Mono", monospace;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.15rem;
+  }
+
+  .card details {
+    margin-top: 0.2rem;
+    border-top: 1px dashed var(--line);
+    padding-top: 0.45rem;
+  }
+
+  .card summary {
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-family: "IBM Plex Mono", monospace;
+    letter-spacing: 0.03em;
+    color: var(--crease-blue);
+    list-style: none;
+  }
+
+  .card summary::-webkit-details-marker { display: none; }
+  .card summary::before {
+    content: "+ full setup";
+  }
+  .card details[open] summary::before {
+    content: "− full setup";
+  }
+
+  .card .detail-body {
+    margin-top: 0.55rem;
+    font-size: 0.88rem;
+    color: var(--ink);
+  }
+
+  .card .detail-body p { margin: 0 0 0.55rem; }
+  .card .detail-body p:last-child { margin-bottom: 0; }
+  .card .detail-body .cue {
+    background: var(--frost);
+    border-radius: 6px;
+    padding: 0.5rem 0.65rem;
+    font-size: 0.83rem;
+  }
+  .card .detail-body .cue strong {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--faceoff-red-ink);
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .card.minor {
+    background: transparent;
+    border-style: dashed;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--steel);
+    display: none;
+  }
+
+  .no-results.show { display: block; }
+
+  /* ---------- footer ---------- */
+
+  footer {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 1.6rem 1.5rem 3rem;
+    border-top: 1px solid var(--line);
+    color: var(--steel);
+    font-size: 0.82rem;
+  }
+
+  footer a { color: var(--steel); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { scroll-behavior: auto !important; }
+  }
+
+  html { scroll-behavior: smooth; }
+
+  @media print {
+    .controls, .top-sub { display: none; }
+    .card details { display: block; }
+    .card summary { display: none; }
+    section.category { break-inside: avoid-page; padding-top: 1.4rem; }
+    .card { break-inside: avoid; }
+  }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<header class="top">
+  <div class="top-inner">
+    <p class="eyebrow">Junior Railers Hockey Club &middot; 2011 &amp; 2014 Select</p>
+    <h1 class="title">Drill Library</h1>
+    <p class="top-sub">Every named drill run at 2011 Select and 2014 Select practices, organized in the order they usually show up on a practice plan — warmup through special teams. Search by name or filter by phase to find one fast.</p>
+    <div class="stat-row" id="statRow"></div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="controls-inner">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="search" type="text" placeholder="Search drills, e.g. &quot;breakout&quot; or &quot;tip drill&quot;" autocomplete="off">
+    </div>
+    <div class="chips" id="chipRow"></div>
+  </div>
+  <p class="result-note" id="resultNote"></p>
+</div>
+
+<main id="main"></main>
+
+<div class="no-results" id="noResults">No drills match that search. Try a shorter word, or clear the filter above.</div>
+
+<footer>
+  Compiled from Junior Railers 2011 Select and 2014 Select practice notes across multiple seasons. Maintained by Matt Cunha. Last updated September 2, 2026 &mdash; drills are added as they're used, so check back for new additions.
+
+</footer>
+
+<script>
+const DATA = [
+  {
+    id: "warmup", name: "Warmup / Skating",
+    note: "Runs at the top of nearly every practice — skating mechanics, edges, and pace-setting before puck-skill work begins.",
+    drills: [
+      { name: "Stretch", summary: "Universal opener, run before nearly every practice." },
+      { name: "Skating / Skating w/ Pucks", summary: "General skating work, often combined with goalie warmup on the side." },
+      { name: "4 Stations / Station Circuit", summary: "Split into 4 groups and rotate through 4 stations, fast paced.",
+        detail: "<p>Split players into 4 groups. Each group rotates through 4 stations — skating/edges, passing with a shot, shooting, and rest — spending 45&ndash;60 seconds at each. Meant to be run at a fast pace with minimal downtime.</p>" },
+      { name: "2 Cone Skating Series", summary: "Skating series using 2 cones set up per player/lane." },
+      { name: "4 Dots Skating / 4 Dots Overspeed Skating", summary: "Skating pattern using the 4 faceoff dots; the Overspeed version runs the same pattern at max speed." },
+      { name: "Circles / Half Circles w/ Pucks", summary: "Skating and puck control worked around the circles." },
+      { name: "Edge Work / Weaving-Edge Work / Bumper Edge Work", summary: "Edge-focused station work, often using bumpers for weaving." },
+      { name: "Stops and Starts", summary: "Stopping technique combined with crossover starts." },
+      { name: "Game Warmup", summary: "General pre-practice warmup label used loosely across seasons." },
+      { name: "Race for Pucks / Full Ice Race for Pucks", summary: "Competitive, full-ice puck-retrieval skate." },
+      { name: "T Skating", summary: "T-pattern skating drill." }
+    ]
+  },
+  {
+    id: "passing", name: "Passing",
+    note: "",
+    drills: [
+      { name: "Neutral Zone Passing", summary: "Core recurring passing drill — half circle, full circle, 2-on-0, and pivot variants." },
+      { name: "5 Pass Shooting / 5 Pass w/ Shot", summary: "Players complete 5 passes before taking a shot." },
+      { name: "Matthews Transition", summary: "Named transition-passing drill." },
+      { name: "3/4 Lane Passing", summary: "Passing drill run using 3 or 4 lanes across the ice." },
+      { name: "Blue Line Passing", summary: "Passing progression run at the blue line." },
+      { name: "Umbrella Passing", summary: "Passing drill run in an umbrella-shaped setup." },
+      { name: "Stationary Passing", summary: "Passing from fixed positions, no skating." },
+      { name: "4 Pass Shooting", summary: "4 players skate randomly and attack the net off the 4th pass.",
+        detail: "<p>4 players skate around randomly. The coach passes a puck in and the players pass it to each other. When the 4th player catches the pass, they attack the net — then the sequence repeats.</p>" },
+      { name: "Toronto 4 Shot (Warm-Up)", summary: "Runs on both sides of the ice at once: dot-lane drives, seam passes, stretch routes, blue-line walk.",
+        video: "https://www.icehockeysystems.com/hockey-drills/toronto-4-shot-warm-up" }
+    ]
+  },
+  {
+    id: "breakout", name: "Breakout / Transition",
+    note: "The most common structured drill block in the library — some version of this appears in almost every practice.",
+    drills: [
+      { name: "Breakout / Regroup / Break-in (5 on 2 and variants)", summary: "The most-used structured drill block across both teams and every season." },
+      { name: "Breakout → Regroup → Attack", summary: "3-on-2 attack that grows into a 5 on 2, then a defended 5 on 4.",
+        detail: "<p>Starts as a breakout and regroup into a 3-on-2 attack. Both defensemen jump into the rush, turning it into a 5 on 2; two backcheckers get back to make it a 5 on 4. Play out the resulting 5 on 4 with the defending players working penalty-kill positioning.</p><div class='cue'><strong>Coaching focus</strong>Swing in the neutral zone with a middle-lane drive, using a bump-out to push the opposing point defenseman back. Mix in a chip-and-chase as an alternate zone-entry look.</div>" },
+      { name: "Fukami Breakout (Warm-Up)", summary: "Builds breakout timing, puck handling, and goalie involvement.",
+        detail: "<p>Forwards time their routes to receive passes from defensemen in the neutral zone, setting up 1-on-1 rushes or delayed trailer plays. Designed as a warm-up-style breakout rep.</p>",
+        video: "https://www.youtube.com/watch?v=zWs_NtH0h7c" },
+      { name: "Cross Ice 3 on 3 Breakout / Regroup", summary: "Cross-ice 3 on 3 with a turnover rule that forces a full breakout on every change of possession.",
+        detail: "<p>Cross-ice 3 on 3. On a clean turnover, the new offensive team must carry the puck behind their own net before attacking, and the defending team must get back and tag their own goalie's pads before pressuring. Use a whistle to mark the turnover if you need to keep it clean.</p>" },
+      { name: "Holy Cross 2 on 0 / 3 on 0", summary: "The single most frequently run drill in the whole library — used by both teams every season. Also run \"Modified\" and \"w/ defenders\" or \"w/ 1D.\"" },
+      { name: "\"4 in a Row\"", summary: "Sequence drill: neutral zone regroup → 3 on 1 → shot from the point → breakout 3 on 2 with backcheck." },
+      { name: "Breakout Reps / Breakout Race / Breakout Relay", summary: "Repetition-based breakout work, often run as a race or relay format." },
+      { name: "Neutral Zone Regroup (to 3 on 0)", summary: "Regroup drill that finishes into a 3-on-0." },
+      { name: "Breakout Decision Making", summary: "Focus drill on reads and decisions during the breakout, not just clean execution." }
+    ]
+  },
+  {
+    id: "forecheck", name: "Forecheck",
+    note: "",
+    drills: [
+      { name: "Forecheck 1-2-2 Triangle / Neutral Zone Forecheck", summary: "Team system work on the 1-2-2 forecheck shape." },
+      { name: "Forecheck 3 on 1 / 3 on 2", summary: "Forecheck reps with the forecheckers outnumbering — the high forward stays in the zone until possession is gained." },
+      { name: "2 on 1 Forecheck", summary: "Puck carrier tries to beat a cone along the boards while the forechecker angles them into the wall.",
+        detail: "<p>The player behind the net carries the puck behind the net and along the boards, trying to carry it past a cone. The forechecker angles the puck carrier into the boards, using their body — hips to hands — to stop them.</p><div class='cue'><strong>Coaching cue</strong>Take away the middle first, then push the puck carrier to the wall to take away space.</div>" },
+      { name: "Chip and Chase", summary: "Chip the puck deep and chase it down rather than carrying it in or dumping and changing — an alternate zone-entry look." },
+      { name: "3 on 2 Auburn High School", summary: "Two 3-on-2s run simultaneously on either side of a bumper line down the middle of the zone.",
+        detail: "<p>One zone is split in half lengthwise by a line of bumpers, with a net on each side and a 3-on-2 running on each side at the same time. Defense try to move the puck over the bumper line to their forwards on the other side when there's time for an intentional play, otherwise they clear it. Forwards find the open player, move the puck, and work to get open to create real scoring chances off the odd-man advantage.</p>" },
+      { name: "5 on 2/3 Forecheck + Offensive Zone", summary: "Combined forecheck drill that flows directly into offensive-zone work." }
+    ]
+  },
+  {
+    id: "battle", name: "1-on-1 / Battle",
+    note: "",
+    drills: [
+      { name: "Kraken", summary: "Named battle-drill family covering 1 on 1, 2 on 1, and 2 on 2, run at both ends of the ice.",
+        video: "https://www.instagram.com/p/C9CyxCKAfk7/" },
+      { name: "Behind Net Battle (2 on 2 / 3 on 2)", summary: "Puck battle below the goal line that opens into a 3-on-2 on the whistle.",
+        detail: "<p>Two players from each team battle for a puck. They must stay below the goal line. On the whistle, whichever team has the puck goes on offense, and a third player from their team enters the play.</p>" },
+      { name: "1 on 1 / 2 on 1 Pass Down and Shadow", summary: "Pass-and-follow battle drill." },
+      { name: "Big Man 2 on 1 (Cycle)", summary: "Named 2-on-1 cycle drill.", video: "https://www.icehockeysystems.com/hockey-drills/big-man-cycle-2-1" },
+      { name: "Chase Drill / 1 on 1 Chase Drill", summary: "Pursuit-based 1-on-1 drill." },
+      { name: "Railers 1 on 1s", summary: "House drill combining multiple 1-on-1 and 2-on-1 reps." },
+      { name: "Circle Puck Protection", summary: "Puck protection worked around the circle, in 1-on-1 or cross-ice 2-on-2 form." },
+      { name: "Danger Zone 1v1", summary: "High-turnover-area transition drill emphasizing quick, deceptive zone entries.",
+        detail: "<p>Can be run full ice, half ice on both sides, or as a station. The coach stands at the edge of the center-ice faceoff circle with pucks. The forward starts on the blue line along the wall; the defenseman starts on the blue line near the dots. Both skate to the red line and stop on the whistle — the forward calls for the pass and \"the danger zone starts.\"</p><p>The forward can go outside (use speed, chip it in soft if checked at the blue line) or through the middle (cut in and drive it deep if there's space), varying pace and using deceptive moves.</p><div class='cue'><strong>Defense cue</strong>Match speed with stick on ice, watch the chest not the puck, pressure at or before the blue line, avoid over-crossing, and finish blade-on-blade with the body.</div>",
+        video: "https://www.icehockeysystems.com/hockey-drills/danger-zone-1-1" },
+      { name: "Wheaties 2 on 1", summary: "Named 2-on-1 drill." },
+      { name: "Framingham High/Low 2 on 1", summary: "Named 2-on-1 drill built around a high-low read." },
+      { name: "Net Front Battle", summary: "Progressive net-front battle drill: 1v1 into 2v2 into 2v2." },
+      { name: "1 on 1 / 2 on 1 — D in Middle (Half Circle)", summary: "Defenseman starts in the middle of the half circle and races around to defend after starting the play.",
+        detail: "<p>The defenseman starts in the middle of the half circle, passes to the forward, then races around the circle to play 1 on 1 against the other forward coming from the other side.</p>" },
+      { name: "Deluca 3 Shot", summary: "Occasional-use named drill." },
+      { name: "1 on 1 Bull Rush", summary: "Occasional-use named drill." },
+      { name: "1 on 1 Over Speed", summary: "Occasional-use named drill." },
+      { name: "Stick Lift to Attack", summary: "Occasional-use named drill." },
+      { name: "Dallas 1 on 1 Pressure", summary: "Occasional-use named drill." }
+    ]
+  },
+  {
+    id: "sag", name: "Small-Area Game / Continuous",
+    note: "",
+    drills: [
+      { name: "3 on 3 Continuous", summary: "The most-used small-area game across both teams." },
+      { name: "2 on 2 Continuous", summary: "Very frequent small-area game." },
+      { name: "3 on 1 Continuous", summary: "Continuous transition game focused on the middle-lane drive." },
+      { name: "3 on 2 Continuous", summary: "Continuous transition game." },
+      { name: "4 on 2 Continuous", summary: "Continuous transition game where the 4th player is a defenseman joining the rush." },
+      { name: "Cross Ice Narrow Small-Area 2 on 2", summary: "Tight, narrow cross-ice lane, 2 on 2, teams change on the whistle." },
+      { name: "2 on 2 Keep Away", summary: "Possession-focused alternative to the narrow cross-ice 2 on 2 — good for mixing in variety." },
+      { name: "Gretzky / McAvoy", summary: "Named small-area games." },
+      { name: "Offensive Advantage Game", summary: "Used by both teams.", video: "https://www.icehockeysystems.com/practice/1/1557001" },
+      { name: "Keep Away", summary: "Possession-focused small-area game, run 2 on 2 or 3 on 3 with goals or nets." },
+      { name: "Capture the Flag / Build Your Team", summary: "Team-building small-area games." },
+      { name: "The Box Game / Give & Go", summary: "Small-area possession game." },
+      { name: "The Ricky", summary: "Breakout-race small-area game, run as a 3 on 3.", video: "https://www.icehockeysystems.com/hockey-drills/the-ricky" },
+      { name: "RPI 2 on 2 Continuous", summary: "Named continuous small-area game.", video: "https://www.icehockeysystems.com/hockey-drills/rpi-2-2" },
+      { name: "Picket Fence", summary: "Small-area game run 2 on 2 or 3 on 3.", video: "https://www.icehockeysystems.com/hockey-drills/picket-fences" },
+      { name: "2 on 2 / 4 on 4", summary: "Named small-area game.", video: "https://www.youtube.com/watch?v=4QaK5ziWvlA" },
+      { name: "3 on 3 Ramsay", summary: "Competitive small-area race game." },
+      { name: "4 on 4", summary: "Occasional-use small-area game." },
+      { name: "3 on 3 w/ 2 Gates", summary: "Occasional-use small-area game." },
+      { name: "3 on 3 Handball", summary: "Occasional-use small-area game." },
+      { name: "Gates of Buffalo", summary: "Occasional-use small-area game." },
+      { name: "3 on 1 Points Game", summary: "Occasional-use small-area game." },
+      { name: "Change of Possession", summary: "Occasional-use small-area game." },
+      { name: "Scoring Relay", summary: "Occasional-use small-area game." },
+      { name: "Cross Ice Bubble Hockey", summary: "Occasional-use small-area game." },
+      { name: "Northville Odd Man Cross Ice", summary: "Occasional-use small-area game." },
+      { name: "Partner Race 2v2", summary: "Occasional-use small-area game." }
+    ]
+  },
+  {
+    id: "shooting", name: "Shooting",
+    note: "Mostly folded into passing drills (5 Pass Shooting, Passing w/ Shot) rather than run standalone — these are the standalone entries.",
+    drills: [
+      { name: "3 Shot Tip Drill", summary: "Diagrammed tip-drill setup." },
+      { name: "1 on 1 / 2 on 1 Tip Drill", summary: "Tip drill run as a live 1-on-1 or 2-on-1 rep." },
+      { name: "Cross Ice Tight Zone 3 Shot Tip and Battle", summary: "Cross-ice shooting drill for 12 players at once that finishes in a net-front battle.",
+        detail: "<p>Run cross-ice with 4 lines total, one at each blue line along each board (mirrored on both sides so both halves run at once). On the whistle, the two diagonally-opposite lines go, each sending 3 players who get their passes from the line directly across the ice:</p><p><strong>Player 1</strong> skates straight to the net, gets a pass, shoots, then sets up at the net front for a screen.</p><p><strong>Player 2</strong> loops halfway around the center-ice circle, gets a pass, shoots on the other net, then joins Player 1 for a screen.</p><p><strong>Player 3</strong> skates to the far dot, back to the near dot, cuts through the middle, gets a pass, and shoots — while Players 1 and 2 battle in front of the net (1 plays defenseman, 2 tries to tip Player 3's shot).</p>" },
+      { name: "Shooting (station)", summary: "One-touch shooting off a pass, no stickhandling.",
+        detail: "<p>The coach passes to each player. The player catches the pass and, without stickhandling, takes a hard shot &mdash; not a one-timer.</p>" }
+    ]
+  },
+  {
+    id: "specialteams", name: "Special Teams",
+    note: "",
+    drills: [
+      { name: "Penalty Kill", summary: "Box system, slot-coverage focus, choosing when to pressure vs. stay passive." },
+      { name: "Power Play", summary: "Slowed-down reps, including a \"1-3-1: Mad Attacker\" setup." },
+      { name: "Faceoffs", summary: "D-zone \"Stack,\" \"Diablo,\" and \"Double Supreme\" plays; centers practice faceoff technique." }
+    ]
+  }
+];
+
+const main = document.getElementById("main");
+const chipRow = document.getElementById("chipRow");
+const statRow = document.getElementById("statRow");
+const resultNote = document.getElementById("resultNote");
+const noResults = document.getElementById("noResults");
+const searchInput = document.getElementById("search");
+
+let activeCat = "all";
+
+function totalDrills() { return DATA.reduce((n, c) => n + c.drills.length, 0); }
+function totalVideos() { return DATA.reduce((n, c) => n + c.drills.filter(d => d.video).length, 0); }
+
+statRow.innerHTML = `
+  <div class="stat"><span class="num"><em>${totalDrills()}</em></span><span class="label">Named drills</span></div>
+  <div class="stat"><span class="num">${DATA.length}</span><span class="label">Phases of practice</span></div>
+  <div class="stat"><span class="num">${totalVideos()}</span><span class="label">With video</span></div>
+`;
+
+chipRow.innerHTML = ["all", ...DATA.map(c => c.id)].map(id => {
+  const label = id === "all" ? "All" : DATA.find(c => c.id === id).name;
+  return `<button class="chip${id === "all" ? " active" : ""}" data-cat="${id}">${label}</button>`;
+}).join("");
+
+function cardHTML(d) {
+  const video = d.video ? `<a class="video-link" href="${d.video}" target="_blank" rel="noopener">&#9654; Watch</a>` : "";
+  const details = d.detail
+    ? `<details><summary></summary><div class="detail-body">${d.detail}</div></details>`
+    : "";
+  return `<div class="card" data-name="${d.name.toLowerCase()}" data-summary="${(d.summary||"").toLowerCase()}">
+    <h3>${d.name}</h3>
+    <p class="summary">${d.summary || ""}</p>
+    ${video}
+    ${details}
+  </div>`;
+}
+
+function render() {
+  const q = searchInput.value.trim().toLowerCase();
+  main.innerHTML = "";
+  let shown = 0;
+
+  DATA.forEach(cat => {
+    if (activeCat !== "all" && activeCat !== cat.id) return;
+    const matches = cat.drills.filter(d =>
+      !q || d.name.toLowerCase().includes(q) || (d.summary || "").toLowerCase().includes(q) || (d.detail || "").toLowerCase().includes(q)
+    );
+    if (!matches.length) return;
+    shown += matches.length;
+
+    const idx = DATA.indexOf(cat) + 1;
+    const section = document.createElement("section");
+    section.className = "category";
+    section.id = cat.id;
+    section.innerHTML = `
+      <div class="cat-head">
+        <span class="num">${String(idx).padStart(2, "0")}</span>
+        <h2>${cat.name}</h2>
+        <span class="cat-count">${matches.length} drill${matches.length === 1 ? "" : "s"}</span>
+      </div>
+      ${cat.note ? `<p class="cat-note">${cat.note}</p>` : ""}
+      <div class="grid">${matches.map(cardHTML).join("")}</div>
+    `;
+    main.appendChild(section);
+  });
+
+  noResults.classList.toggle("show", shown === 0);
+  resultNote.textContent = q || activeCat !== "all"
+    ? `Showing ${shown} of ${totalDrills()} drills`
+    : "";
+}
+
+chipRow.addEventListener("click", e => {
+  const btn = e.target.closest(".chip");
+  if (!btn) return;
+  activeCat = btn.dataset.cat;
+  [...chipRow.children].forEach(c => c.classList.toggle("active", c === btn));
+  render();
+});
+
+searchInput.addEventListener("input", render);
+
+render();
+</script>
