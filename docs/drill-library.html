@@ -614,6 +614,7 @@
   function reveal() {
     document.getElementById("gate").style.display = "none";
     document.getElementById("site-content").style.display = "";
+    document.dispatchEvent(new Event("site:unlocked"));
   }
 
   function tryUnlock() {
@@ -867,15 +868,48 @@ function render() {
     : "";
 }
 
+function setActiveChip(cat) {
+  activeCat = cat;
+  [...chipRow.children].forEach(c => c.classList.toggle("active", c.dataset.cat === cat));
+}
+
 chipRow.addEventListener("click", e => {
   const btn = e.target.closest(".chip");
   if (!btn) return;
-  activeCat = btn.dataset.cat;
-  [...chipRow.children].forEach(c => c.classList.toggle("active", c === btn));
+  setActiveChip(btn.dataset.cat);
   render();
+  if (btn.dataset.cat === "all") {
+    history.replaceState(null, "", location.pathname + location.search);
+  } else {
+    location.hash = btn.dataset.cat;
+  }
 });
 
 searchInput.addEventListener("input", render);
 
+// Anchor / deep-link support: #<category-id> both selects that category's
+// filter chip and scrolls to it. Content is built by JS above, so the
+// browser's own automatic "jump to #fragment on load" runs before these
+// sections exist and silently does nothing — this replaces it by hand,
+// on load and whenever the hash changes (back/forward, or another link
+// on the page).
+function goToHash(scroll) {
+  const id = decodeURIComponent(location.hash.replace(/^#/, ""));
+  if (!id) return;
+  const isCategory = DATA.some(c => c.id === id);
+  if (isCategory) {
+    setActiveChip(id);
+    render();
+  }
+  const target = document.getElementById(id);
+  if (target && scroll) {
+    requestAnimationFrame(() => target.scrollIntoView({ behavior: "instant", block: "start" }));
+  }
+}
+
+window.addEventListener("hashchange", () => goToHash(true));
+document.addEventListener("site:unlocked", () => goToHash(true));
+
 render();
+goToHash(true);
 </script>
