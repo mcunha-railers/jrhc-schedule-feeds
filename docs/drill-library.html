@@ -508,6 +508,48 @@
     section.category { break-inside: avoid-page; padding-top: 1.4rem; }
     .card { break-inside: avoid; }
   }
+
+  /* ---------- mobile ---------- */
+
+  @media (max-width: 640px) {
+    header.top { padding: 2rem 1.1rem 1.6rem; }
+    .eyebrow { font-size: 0.64rem; letter-spacing: 0.1em; }
+    .top-sub { font-size: 0.92rem; }
+
+    .stat-row { gap: 1.1rem; }
+    .stat .num { font-size: 1.6rem; }
+    .stat .label { font-size: 0.6rem; letter-spacing: 0.06em; }
+
+    .controls-inner { padding: 0.7rem 1.1rem; gap: 0.6rem; }
+    .search-wrap { flex-basis: 100%; }
+    #search { padding: 0.6rem 0.8rem 0.6rem 2.1rem; font-size: 1rem; }
+    .chips { gap: 0.4rem; }
+    .chip { padding: 0.5rem 0.8rem; font-size: 0.74rem; }
+
+    main { padding: 1.2rem 1.1rem 3rem; }
+    section.category { padding-top: 2rem; scroll-margin-top: 8.5rem; }
+
+    .cat-head { flex-wrap: wrap; row-gap: 0.15rem; padding-bottom: 0.5rem; }
+    .cat-head .num { font-size: 1.7rem; min-width: 1.8ch; }
+    .cat-head h2 { font-size: 1.4rem; }
+    .cat-count { flex-basis: 100%; padding-left: calc(1.8ch + 0.9rem); }
+    .cat-note { font-size: 0.82rem; margin-top: 0.1rem; }
+
+    .grid { gap: 0.65rem; }
+    .card { padding: 0.85rem 0.9rem 0.9rem; }
+    .card h3 { font-size: 1.08rem; }
+
+    #gate .box { padding: 1.75rem 1.4rem; }
+
+    body::before { background-position: right -110px bottom -40px; background-size: min(360px, 78vw); opacity: 0.045; }
+  }
+
+  @media (max-width: 640px) and (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) body::before { opacity: 0.06; }
+  }
+  @media (max-width: 640px) {
+    :root[data-theme="dark"] body::before { opacity: 0.06; }
+  }
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
