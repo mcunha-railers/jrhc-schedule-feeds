@@ -3,622 +3,723 @@
 <title>Team Handbook</title>
 <meta name="robots" content="noindex, nofollow">
 <style>
-  #gate {
-    position: fixed;
-    inset: 0;
-    z-index: 999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--rink-navy, #0f2c52);
-    padding: 1.5rem;
-  }
+#gate {
+position: fixed;
+inset: 0;
+z-index: 999;
+display: flex;
+align-items: center;
+justify-content: center;
+background: var(--rink-navy, #0f2c52);
+padding: 1.5rem;
+}
 
-  #gate .box {
-    width: 100%;
-    max-width: 22rem;
-    background: var(--surface, #fff);
-    border-radius: 12px;
-    padding: 2rem 1.75rem;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-  }
-  #gate h2 {
-    margin: 0 0 0.4rem;
-    font-family: "Teko", "Arial Narrow", sans-serif;
-    font-size: 1.8rem;
-    color: var(--ink, #0f2c52);
-  }
-  #gate p {
-    margin: 0 0 1.1rem;
-    font-size: 0.85rem;
-    color: var(--steel, #52627a);
-    font-family: "Public Sans", sans-serif;
-  }
-  #gate input {
-    width: 100%;
-    padding: 0.6rem 0.8rem;
-    border: 1px solid var(--line, #d3dde6);
-    border-radius: 7px;
-    font-size: 0.95rem;
-    margin-bottom: 0.7rem;
-    box-sizing: border-box;
-    font-family: "Public Sans", sans-serif;
-  }
-  #gate button {
-    width: 100%;
-    padding: 0.6rem 0.8rem;
-    border: none;
-    border-radius: 7px;
-    background: var(--faceoff-red, #2360b5);
-    color: #fff;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: "Public Sans", sans-serif;
-  }
-  #gate .err {
-    color: #c2453d;
-    font-size: 0.8rem;
-    margin-top: 0.6rem;
-    min-height: 1em;
-    font-family: "Public Sans", sans-serif;
-  }
+#gate .box {
+width: 100%;
+max-width: 22rem;
+background: var(--surface, #fff);
+border-radius: 12px;
+padding: 2rem 1.75rem;
+text-align: center;
+box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
+#gate h2 {
+margin: 0 0 0.4rem;
+font-family: "Teko", "Arial Narrow", sans-serif;
+font-size: 1.8rem;
+color: var(--ink, #0f2c52);
+}
+#gate p {
+margin: 0 0 1.1rem;
+font-size: 0.85rem;
+color: var(--steel, #52627a);
+font-family: "Public Sans", sans-serif;
+}
+#gate input {
+width: 100%;
+padding: 0.6rem 0.8rem;
+border: 1px solid var(--line, #d3dde6);
+border-radius: 7px;
+font-size: 0.95rem;
+margin-bottom: 0.7rem;
+box-sizing: border-box;
+font-family: "Public Sans", sans-serif;
+}
+#gate button {
+width: 100%;
+padding: 0.6rem 0.8rem;
+border: none;
+border-radius: 7px;
+background: var(--faceoff-red, #2360b5);
+color: #fff;
+font-size: 0.9rem;
+font-weight: 600;
+cursor: pointer;
+font-family: "Public Sans", sans-serif;
+}
+#gate .err {
+color: #c2453d;
+font-size: 0.8rem;
+margin-top: 0.6rem;
+min-height: 1em;
+font-family: "Public Sans", sans-serif;
+}
 </style>
 <style>
-  :root {
-    --ice: #eef1f5;
-    --surface: #ffffff;
-    --ink: #0f2c52;
-    --steel: #52627a;
-    --steel-soft: #8b98a6;
-    --line: #d3dde6;
-    --rink-navy: #0f2c52;
-    --rink-navy-deep: #081729;
-    --faceoff-red: #2360b5;
-    --faceoff-red-ink: #184a91;
-    --crease-blue: #2360b5;
-    --frost: #e4edf8;
-    --focus-ring: #2360b5;
-  }
+:root {
+--ice: #eef1f5;
+--surface: #ffffff;
+--ink: #0f2c52;
+--steel: #52627a;
+--steel-soft: #8b98a6;
+--line: #d3dde6;
+--rink-navy: #0f2c52;
+--rink-navy-deep: #081729;
+--faceoff-red: #2360b5;
+--faceoff-red-ink: #184a91;
+--crease-blue: #2360b5;
+--frost: #e4edf8;
+--focus-ring: #2360b5;
+}
 
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --ice: #081729;
-      --surface: #0f2c52;
-      --ink: #eef3f8;
-      --steel: #adb2b6;
-      --steel-soft: #7c93ab;
-      --line: #2a4a72;
-      --rink-navy: #0f2c52;
-      --rink-navy-deep: #050f1c;
-      --faceoff-red: #5b9bdc;
-      --faceoff-red-ink: #8fc1e8;
-      --crease-blue: #5b9bdc;
-      --frost: #163a66;
-      --focus-ring: #5b9bdc;
-    }
-  }
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) {
+--ice: #081729;
+--surface: #0f2c52;
+--ink: #eef3f8;
+--steel: #adb2b6;
+--steel-soft: #7c93ab;
+--line: #2a4a72;
+--rink-navy: #0f2c52;
+--rink-navy-deep: #050f1c;
+--faceoff-red: #5b9bdc;
+--faceoff-red-ink: #8fc1e8;
+--crease-blue: #5b9bdc;
+--frost: #163a66;
+--focus-ring: #5b9bdc;
+}
+}
 
-  :root[data-theme="dark"] {
-    --ice: #081729;
-    --surface: #0f2c52;
-    --ink: #eef3f8;
-    --steel: #adb2b6;
-    --steel-soft: #7c93ab;
-    --line: #2a4a72;
-    --rink-navy: #0f2c52;
-    --rink-navy-deep: #050f1c;
-    --faceoff-red: #5b9bdc;
-    --faceoff-red-ink: #8fc1e8;
-    --crease-blue: #5b9bdc;
-    --frost: #163a66;
-    --focus-ring: #5b9bdc;
-  }
+:root[data-theme="dark"] {
+--ice: #081729;
+--surface: #0f2c52;
+--ink: #eef3f8;
+--steel: #adb2b6;
+--steel-soft: #7c93ab;
+--line: #2a4a72;
+--rink-navy: #0f2c52;
+--rink-navy-deep: #050f1c;
+--faceoff-red: #5b9bdc;
+--faceoff-red-ink: #8fc1e8;
+--crease-blue: #5b9bdc;
+--frost: #163a66;
+--focus-ring: #5b9bdc;
+}
 
-  * { box-sizing: border-box; }
+* { box-sizing: border-box; }
 
-  body {
-    margin: 0;
-    background: var(--ice);
-    color: var(--ink);
-    font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-  }
+body {
+margin: 0;
+background: var(--ice);
+color: var(--ink);
+font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+line-height: 1.5;
+-webkit-font-smoothing: antialiased;
+}
 
-  a { color: var(--crease-blue); }
+a { color: var(--crease-blue); }
 
-  a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 2px;
-    border-radius: 3px;
-  }
+a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible {
+outline: 2px solid var(--focus-ring);
+outline-offset: 2px;
+border-radius: 3px;
+}
 
-  .mono { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; }
+.mono { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; }
 
-  header.top {
-    background: linear-gradient(180deg, var(--rink-navy) 0%, var(--rink-navy-deep) 100%);
-    color: #eef4f9;
-    position: relative;
-    padding: 2.6rem 1.5rem 2.1rem;
-    overflow: hidden;
-  }
+header.top {
+background: linear-gradient(180deg, var(--rink-navy) 0%, var(--rink-navy-deep) 100%);
+color: #eef4f9;
+position: relative;
+padding: 2.6rem 1.5rem 2.1rem;
+overflow: hidden;
+}
 
-  header.top::after {
-    content: "";
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    height: 3px;
-    background: repeating-linear-gradient(
-      90deg,
-      var(--faceoff-red) 0 28px,
-      transparent 28px 56px
-    );
-    opacity: 0.85;
-  }
+header.top::after {
+content: "";
+position: absolute;
+left: 0; right: 0; bottom: 0;
+height: 3px;
+background: repeating-linear-gradient(
+90deg,
+var(--faceoff-red) 0 28px,
+transparent 28px 56px
+);
+opacity: 0.85;
+}
 
-  .top-inner { max-width: 56rem; margin: 0 auto; }
+.top-inner { max-width: 56rem; margin: 0 auto; }
 
-  .eyebrow {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #9fb7cc;
-    margin: 0 0 0.6rem;
-  }
+.eyebrow {
+font-family: "IBM Plex Mono", monospace;
+font-size: 0.72rem;
+letter-spacing: 0.14em;
+text-transform: uppercase;
+color: #9fb7cc;
+margin: 0 0 0.6rem;
+}
 
-  h1.title {
-    margin: 0 0 0.5rem;
-    font-size: clamp(2.4rem, 6vw, 3.6rem);
-    line-height: 0.95;
-    color: #fff;
-  }
+h1.title {
+margin: 0 0 0.5rem;
+font-size: clamp(2.4rem, 6vw, 3.6rem);
+line-height: 0.95;
+color: #fff;
+}
 
-  .top-sub {
-    max-width: 40rem;
-    color: #c3d5e3;
-    font-size: 1rem;
-    margin: 0 0 1.6rem;
-  }
+.top-sub {
+max-width: 40rem;
+color: #c3d5e3;
+font-size: 1rem;
+margin: 0 0 1.6rem;
+}
 
-  .stat-row { display: flex; gap: 1.9rem; flex-wrap: wrap; }
-  .stat { display: flex; flex-direction: column; }
-  .stat .num { font-size: 1.5rem; line-height: 1; color: #fff; }
-  .stat .label {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #8fa6ba;
-    margin-top: 0.15rem;
-  }
+.stat-row { display: flex; gap: 1.9rem; flex-wrap: wrap; }
+.stat { display: flex; flex-direction: column; }
+.stat .num { font-size: 1.5rem; line-height: 1; color: #fff; }
+.stat .label {
+font-family: "IBM Plex Mono", monospace;
+font-size: 0.68rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: #8fa6ba;
+margin-top: 0.15rem;
+}
 
-  .controls {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    background: color-mix(in srgb, var(--ice) 92%, transparent);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--line);
-  }
+.controls {
+position: sticky;
+top: 0;
+z-index: 20;
+background: color-mix(in srgb, var(--ice) 92%, transparent);
+backdrop-filter: blur(8px);
+border-bottom: 1px solid var(--line);
+}
 
-  .controls-inner {
-    max-width: 56rem;
-    margin: 0 auto;
-    padding: 0.8rem 1.5rem;
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
+.controls-inner {
+max-width: 56rem;
+margin: 0 auto;
+padding: 0.8rem 1.5rem;
+display: flex;
+gap: 0.5rem;
+flex-wrap: wrap;
+}
 
-  .chip {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.03em;
-    padding: 0.45rem 0.8rem;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--surface);
-    color: var(--steel);
-    cursor: pointer;
-    white-space: nowrap;
-    text-decoration: none;
-  }
+.chip {
+font-family: "IBM Plex Mono", monospace;
+font-size: 0.75rem;
+letter-spacing: 0.03em;
+padding: 0.45rem 0.8rem;
+border-radius: 999px;
+border: 1px solid var(--line);
+background: var(--surface);
+color: var(--steel);
+cursor: pointer;
+white-space: nowrap;
+text-decoration: none;
+}
 
-  .chip:hover { border-color: var(--crease-blue); color: var(--crease-blue); }
+.chip:hover { border-color: var(--crease-blue); color: var(--crease-blue); }
 
-  main {
-    max-width: 56rem;
-    margin: 0 auto;
-    padding: 1.6rem 1.5rem 4rem;
-  }
+main {
+max-width: 56rem;
+margin: 0 auto;
+padding: 1.6rem 1.5rem 4rem;
+}
 
-  section.category {
-    padding-top: 2.6rem;
-    scroll-margin-top: 4.7rem;
-  }
+section.category {
+padding-top: 2.6rem;
+scroll-margin-top: 4.7rem;
+}
 
-  .cat-head {
-    display: flex;
-    align-items: baseline;
-    gap: 0.9rem;
-    border-bottom: 2px solid var(--line);
-    padding-bottom: 0.6rem;
-    margin-bottom: 1.1rem;
-  }
+.cat-head {
+display: flex;
+align-items: baseline;
+gap: 0.9rem;
+border-bottom: 2px solid var(--line);
+padding-bottom: 0.6rem;
+margin-bottom: 1.1rem;
+}
 
-  .cat-head .num {
-    font-family: "Teko", sans-serif;
-    font-size: 2.1rem;
-    color: var(--faceoff-red);
-    min-width: 1.6ch;
-  }
+.cat-head .num {
+font-family: "Teko", sans-serif;
+font-size: 2.1rem;
+color: var(--faceoff-red);
+min-width: 1.6ch;
+}
 
-  .cat-head h2 {
-    margin: 0;
-    font-family: "Teko", sans-serif;
-    font-weight: 600;
-    font-size: 1.9rem;
-    flex: 1;
-  }
+.cat-head h2 {
+margin: 0;
+font-family: "Teko", sans-serif;
+font-weight: 600;
+font-size: 1.9rem;
+flex: 1;
+}
 
-  .cat-note {
-    font-size: 0.9rem;
-    color: var(--steel);
-    margin: -0.6rem 0 1.3rem;
-  }
+.cat-note {
+font-size: 0.9rem;
+color: var(--steel);
+margin: -0.6rem 0 1.3rem;
+}
 
-  .prose h3 {
-    font-family: "Teko", sans-serif;
-    font-weight: 600;
-    font-size: 1.35rem;
-    letter-spacing: 0.01em;
-    margin: 1.7rem 0 0.5rem;
-    color: var(--ink);
-  }
-  .prose h3:first-child { margin-top: 0; }
+.prose h3 {
+font-family: "Teko", sans-serif;
+font-weight: 600;
+font-size: 1.35rem;
+letter-spacing: 0.01em;
+margin: 1.7rem 0 0.5rem;
+color: var(--ink);
+}
+.prose h3:first-child { margin-top: 0; }
 
-  .prose h4 {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.8rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--faceoff-red-ink);
-    margin: 1.1rem 0 0.4rem;
-  }
+.prose h4 {
+font-family: "IBM Plex Mono", monospace;
+font-size: 0.8rem;
+letter-spacing: 0.04em;
+text-transform: uppercase;
+color: var(--faceoff-red-ink);
+margin: 1.1rem 0 0.4rem;
+}
 
-  .prose p { margin: 0 0 0.7rem; font-size: 0.96rem; }
-  .prose ul, .prose ol { margin: 0 0 0.9rem; padding-left: 1.3rem; }
-  .prose li { margin-bottom: 0.4rem; font-size: 0.96rem; }
-  .prose strong { color: var(--ink); }
+.prose p { margin: 0 0 0.7rem; font-size: 0.96rem; }
+.prose ul, .prose ol { margin: 0 0 0.9rem; padding-left: 1.3rem; }
+.prose li { margin-bottom: 0.4rem; font-size: 0.96rem; }
+.prose strong { color: var(--ink); }
 
-  .tag {
-    display: inline-block;
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 0.15rem 0.55rem;
-    border-radius: 999px;
-    margin-left: 0.5rem;
-    vertical-align: middle;
-    white-space: nowrap;
-  }
-  .tag.proposed {
-    background: var(--frost);
-    color: var(--faceoff-red-ink);
-    border: 1px solid var(--crease-blue);
-  }
-  .tag.addlater {
-    background: transparent;
-    color: var(--steel);
-    border: 1px dashed var(--line);
-  }
+.tag {
+display: inline-block;
+font-family: "IBM Plex Mono", monospace;
+font-size: 0.62rem;
+letter-spacing: 0.05em;
+text-transform: uppercase;
+padding: 0.15rem 0.55rem;
+border-radius: 999px;
+margin-left: 0.5rem;
+vertical-align: middle;
+white-space: nowrap;
+}
+.tag.proposed {
+background: var(--frost);
+color: var(--faceoff-red-ink);
+border: 1px solid var(--crease-blue);
+}
+.tag.addlater {
+background: transparent;
+color: var(--steel);
+border: 1px dashed var(--line);
+}
 
-  .callout {
-    background: var(--frost);
-    border-radius: 8px;
-    padding: 0.8rem 1rem;
-    font-size: 0.9rem;
-    margin: 0.8rem 0 1.2rem;
-  }
-  .callout strong {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--faceoff-red-ink);
-    display: block;
-    margin-bottom: 0.3rem;
-  }
+.callout {
+background: var(--frost);
+border-radius: 8px;
+padding: 0.8rem 1rem;
+font-size: 0.9rem;
+margin: 0.8rem 0 1.2rem;
+}
+.callout strong {
+font-family: "IBM Plex Mono", monospace;
+font-size: 0.68rem;
+letter-spacing: 0.05em;
+text-transform: uppercase;
+color: var(--faceoff-red-ink);
+display: block;
+margin-bottom: 0.3rem;
+}
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
-    gap: 0.8rem;
-  }
-  .card {
-    background: var(--surface);
-    border: 1px dashed var(--line);
-    border-radius: 10px;
-    padding: 0.9rem 1rem 1rem;
-  }
-  .card h3 {
-    margin: 0 0 0.3rem;
-    font-family: "Teko", sans-serif;
-    font-weight: 600;
-    font-size: 1.2rem;
-  }
-  .card p {
-    margin: 0;
-    font-size: 0.85rem;
-    color: var(--steel);
-  }
+.grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+gap: 0.8rem;
+}
+.card {
+background: var(--surface);
+border: 1px dashed var(--line);
+border-radius: 10px;
+padding: 0.9rem 1rem 1rem;
+}
+.card h3 {
+margin: 0 0 0.3rem;
+font-family: "Teko", sans-serif;
+font-weight: 600;
+font-size: 1.2rem;
+}
+.card p {
+margin: 0;
+font-size: 0.85rem;
+color: var(--steel);
+}
 
-  footer {
-    max-width: 56rem;
-    margin: 0 auto;
-    padding: 1.6rem 1.5rem 3rem;
-    border-top: 1px solid var(--line);
-    color: var(--steel);
-    font-size: 0.82rem;
-  }
+footer {
+max-width: 56rem;
+margin: 0 auto;
+padding: 1.6rem 1.5rem 3rem;
+border-top: 1px solid var(--line);
+color: var(--steel);
+font-size: 0.82rem;
+}
 
-  html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; }
 
-  @media (max-width: 640px) {
-    header.top { padding: 2rem 1.1rem 1.6rem; }
-    main { padding: 1.2rem 1.1rem 3rem; }
-    .controls-inner { padding: 0.7rem 1.1rem; }
-    #gate .box { padding: 1.75rem 1.4rem; }
-  }
+@media (max-width: 640px) {
+header.top { padding: 2rem 1.1rem 1.6rem; }
+main { padding: 1.2rem 1.1rem 3rem; }
+.controls-inner { padding: 0.7rem 1.1rem; }
+#gate .box { padding: 1.75rem 1.4rem; }
+}
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 
 <div id="gate">
-  <div class="box">
-    <h2>Team Handbook</h2>
-    <p>Junior Railers 15U Select — enter the password to continue.</p>
-    <input type="password" id="gatePw" placeholder="Password" autocomplete="off">
-    <button type="button" id="gateBtn">Unlock</button>
-    <div class="err" id="gateErr"></div>
-  </div>
+<div class="box">
+<h2>Team Handbook</h2>
+<p>Junior Railers 15U Select — enter the password to continue.</p>
+<input type="password" id="gatePw" placeholder="Password" autocomplete="off">
+<button type="button" id="gateBtn">Unlock</button>
+<div class="err" id="gateErr"></div>
+</div>
 </div>
 
 <div id="site-content" style="display:none">
 <header class="top">
-  <div class="top-inner">
-    <p class="eyebrow">Junior Railers Hockey Club &middot; 15U Select &middot; 2026-27 Season</p>
-    <h1 class="title">Team Handbook</h1>
-    <p class="top-sub">Team rules, logistics, and on-ice systems — one place for players, parents, and coaches. This is a living document: sections get filled in and updated through the season.</p>
-    <div class="stat-row">
-      <div class="stat"><span class="num">3</span><span class="label">Parts</span></div>
-      <div class="stat"><span class="num">Draft</span><span class="label">Status</span></div>
-      <div class="stat"><span class="num">Sept 8, 2026</span><span class="label">Last Updated</span></div>
-    </div>
-  </div>
+<div class="top-inner">
+<p class="eyebrow">Junior Railers Hockey Club &middot; 15U Select &middot; 2026-27 Season</p>
+<h1 class="title">Team Handbook</h1>
+<p class="top-sub">Team rules, logistics, and on-ice systems — one place for players, parents, and coaches. This is a living document: sections get filled in and updated through the season.</p>
+<div class="stat-row">
+<div class="stat"><span class="num">3</span><span class="label">Parts</span></div>
+<div class="stat"><span class="num">Draft</span><span class="label">Status</span></div>
+<div class="stat"><span class="num">Sept 8, 2026</span><span class="label">Last Updated</span></div>
+</div>
+</div>
 </header>
 
 <div class="controls">
-  <div class="controls-inner">
-    <a class="chip" href="#rules">1 &middot; Team Rules</a>
-    <a class="chip" href="#logistics">2 &middot; Logistics</a>
-    <a class="chip" href="#systems">3 &middot; Systems</a>
-    <a class="chip" href="#open-items">Open Items</a>
-  </div>
+<div class="controls-inner">
+<a class="chip" href="#rules">1 &middot; Team Rules</a>
+<a class="chip" href="#logistics">2 &middot; Logistics</a>
+<a class="chip" href="#systems">3 &middot; Systems</a>
+<a class="chip" href="#open-items">Open Items</a>
+</div>
 </div>
 
 <main>
 
 <section class="category" id="rules">
-  <div class="cat-head"><span class="num">1</span><h2>Team Rules &amp; Expectations</h2></div>
-  <p class="cat-note">This team is 15-year-olds — freshmen and sophomores in high school. These rules treat you like young adults who are responsible for yourselves.</p>
+<div class="cat-head"><span class="num">1</span><h2>Team Rules &amp; Expectations</h2></div>
+<p class="cat-note">This team is 15-year-olds — freshmen and sophomores in high school. These rules treat you like young adults who are responsible for yourselves.</p>
 
-  <div class="prose">
-    <h3>Communication</h3>
-    <ul>
-      <li>All communication about hockey goes <strong>directly between coaches and players</strong> — not through parents. If you have a question, an issue, or need to report something, you reach out to a coach yourself.</li>
-      <li>Parents should not be contacting coaches on a player's behalf. Questions about a player's own hockey should come from the player.</li>
-    </ul>
-    <div class="callout"><strong>Add later</strong>The specific channel players use to reach coaches directly (text, email, team app), and confirmation coaches' contact info has been shared with players, not just parents.</div>
+<div class="prose">
+<h3>Communication</h3>
+<ul>
+<li>All communication about hockey goes <strong>directly between coaches and players</strong> — not through parents. If you have a question, an issue, or need to report something, you reach out to a coach yourself.</li>
+<li>Parents should not be contacting coaches on a player's behalf. Questions about a player's own hockey should come from the player.</li>
+</ul>
+<div class="callout"><strong>Add later</strong>The specific channel players use to reach coaches directly (text, email, team app), and confirmation coaches' contact info has been shared with players, not just parents.</div>
 
-    <h3>Staying Informed (Crossbar)</h3>
-    <ul>
-      <li>Check Crossbar regularly. Schedule changes, jersey info, and team communications get posted there — it's each player's job to stay on top of it.</li>
-      <li>Practice plans are typically posted by <strong>2:00 PM on practice days</strong>. Review the plan before you get to the rink — have a general idea of what we're working on and come prepared.</li>
-    </ul>
+<h3>Staying Informed (Crossbar)</h3>
+<ul>
+<li>Check Crossbar regularly. Schedule changes, jersey info, and team communications get posted there — it's each player's job to stay on top of it.</li>
+<li>Practice plans are typically posted by <strong>2:00 PM on practice days</strong>. Review the plan before you get to the rink — have a general idea of what we're working on and come prepared.</li>
+</ul>
 
-    <h3>Attendance</h3>
-    <ul>
-      <li><strong>We expect players to be at practice.</strong> Missing practice can impact playing time in games.</li>
-      <li>We understand practices will be missed sometimes — fall school sports, family commitments, and other real conflicts happen, and that's understood. But we expect you to prioritize this team. Every player is an important piece of our development and success.</li>
-      <li>There's a difference between a legitimate need (a big test you have to study for) and poor time management (you knew about it and put it off until the last minute, and now need the time because of that). The first is understood. The second isn't — be better about that.</li>
-      <li>Players are responsible for updating their own attendance in Crossbar — not a parent's job.</li>
-    </ul>
-    <div class="callout"><strong>Add later</strong>How far in advance absences need to be reported.</div>
+<h3>Attendance</h3>
+<ul>
+<li><strong>We expect players to be at practice.</strong> Missing practice can impact playing time in games.</li>
+<li>We understand practices will be missed sometimes — fall school sports, family commitments, and other real conflicts happen, and that's understood. But we expect you to prioritize this team. Every player is an important piece of our development and success.</li>
+<li>There's a difference between a legitimate need (a big test you have to study for) and poor time management (you knew about it and put it off until the last minute, and now need the time because of that). The first is understood. The second isn't — be better about that.</li>
+<li>Players are responsible for updating their own attendance in Crossbar — not a parent's job.</li>
+</ul>
+<div class="callout"><strong>Add later</strong>How far in advance absences need to be reported.</div>
 
-    <h3>Equipment &amp; Uniforms</h3>
-    <ul>
-      <li>Full equipment at every practice and game — this includes neck guards. No exceptions.</li>
-      <li>Correct jerseys and correct socks — know what we're wearing before you show up.</li>
-      <li>Bring <strong>both uniforms (home and away) to every game.</strong> Captains and players are responsible for figuring out which jersey the team is wearing — communicate with the other team's coaches to confirm before warmups.</li>
-    </ul>
+<h3>Equipment &amp; Uniforms</h3>
+<ul>
+<li>Full equipment at every practice and game — this includes neck guards. No exceptions.</li>
+<li>Correct jerseys and correct socks — know what we're wearing before you show up.</li>
+<li>Bring <strong>both uniforms (home and away) to every game.</strong> Captains and players are responsible for figuring out which jersey the team is wearing — communicate with the other team's coaches to confirm before warmups.</li>
+</ul>
 
-    <h3>Playing Time, Lineups &amp; Goalies</h3>
-    <ul>
-      <li><strong>Playing time is not even — it's earned.</strong> Coaches play the players who give the team the best chance to win — based on commitment, performance, attitude, and everything else that goes into being a good teammate.</li>
-      <li><strong>Alternates:</strong> we carry 3 alternates. They're called on to play when the full-time roster (3 lines, 6 D, and 2 G) isn't fully available for a game.</li>
-      <li><strong>Goalies:</strong> we want our goalies playing full games. We'll alternate goalies throughout the season and announce who's playing the upcoming weekend at Thursday's practice.
-        <ul>
-          <li>If we feel a mid-game goalie change could have a positive impact on the game or the team, that can happen. We'll try to prepare goalies for what to expect, but part of being a goalie — especially if you didn't start — is being ready to help your team the moment you're called on.</li>
-        </ul>
-      </li>
-    </ul>
+<h3>Playing Time, Lineups &amp; Goalies</h3>
+<ul>
+<li><strong>Playing time is not even — it's earned.</strong> Coaches play the players who give the team the best chance to win — based on commitment, performance, attitude, and everything else that goes into being a good teammate.</li>
+<li><strong>Alternates:</strong> we carry 3 alternates. They're called on to play when the full-time roster (3 lines, 6 D, and 2 G) isn't fully available for a game.</li>
+<li><strong>Goalies:</strong> we want our goalies playing full games. We'll alternate goalies throughout the season and announce who's playing the upcoming weekend at Thursday's practice.
+<ul>
+<li>If we feel a mid-game goalie change could have a positive impact on the game or the team, that can happen. We'll try to prepare goalies for what to expect, but part of being a goalie — especially if you didn't start — is being ready to help your team the moment you're called on.</li>
+</ul>
+</li>
+</ul>
 
-    <h3>Respect &amp; Conduct</h3>
-    <ul>
-      <li>You represent yourself, your team, the Junior Railers, and your family — at all times, everywhere: on the ice, on the bench, in the locker room, at school, and at home. Make the right choices.</li>
-      <li>Be respectful to teammates, coaches, officials, opponents, and rink staff.</li>
-      <li>Support each other — on the bench, in the room, and outside the rink.</li>
-      <li>Locker rooms must be left clean — every time, every rink.</li>
-    </ul>
+<h3>Respect &amp; Conduct</h3>
+<ul>
+<li>You represent yourself, your team, the Junior Railers, and your family — at all times, everywhere: on the ice, on the bench, in the locker room, at school, and at home. Make the right choices.</li>
+<li>Be respectful to teammates, coaches, officials, opponents, and rink staff.</li>
+<li>Support each other — on the bench, in the room, and outside the rink.</li>
+<li>Locker rooms must be left clean — every time, every rink.</li>
+</ul>
 
-    <h3>Locker Room Policy</h3>
-    <p>There's no other sport where you spend as much time together, or have anything quite like the atmosphere of the locker room. It's part of what makes hockey what it is — it can be fun, it builds relationships, and it brings a team closer together. It can also be dangerous: skate blades are sharp, and it doesn't take much for horsing around to turn into a real injury. Nobody wants to be the reason a teammate's season ends because things got out of hand in the room. Be respectful of each other and the space, and enjoy it for what it is.</p>
-    <ul>
-      <li>No cell phones or other recording-capable devices used in the locker room.</li>
-      <li>Only players, coaches, and approved team personnel in the locker room — no outside visitors.</li>
-    </ul>
+<h3>Locker Room Policy</h3>
+<p>There's no other sport where you spend as much time together, or have anything quite like the atmosphere of the locker room. It's part of what makes hockey what it is — it can be fun, it builds relationships, and it brings a team closer together. It can also be dangerous: skate blades are sharp, and it doesn't take much for horsing around to turn into a real injury. Nobody wants to be the reason a teammate's season ends because things got out of hand in the room. Be respectful of each other and the space, and enjoy it for what it is.</p>
+<ul>
+<li>No cell phones or other recording-capable devices used in the locker room.</li>
+<li>Only players, coaches, and approved team personnel in the locker room — no outside visitors.</li>
+</ul>
 
-    <h3>Unacceptable Behavior <span class="tag proposed">Proposed — confirm/edit</span></h3>
-    <p>The following are not acceptable from anyone on this team, at any team activity (practice, game, tournament, locker room, or team travel):</p>
-    <ul>
-      <li>Disrespect toward officials, coaches, teammates, or opponents — arguing calls, taunting, verbal abuse.</li>
-      <li>Fighting, or any attempt to injure another player, outside what happens within the normal course of play.</li>
-      <li>Bullying, hazing, or excluding a teammate.</li>
-      <li>Discriminatory language or behavior of any kind.</li>
-      <li>Phones or recording devices used in the locker room.</li>
-      <li>Unsportsmanlike conduct that reflects poorly on the team.</li>
-      <li>Ignoring coaching instructions or team rules.</li>
-      <li>Showing up late or unprepared without communicating with a coach in advance.</li>
-      <li>Leaving the bench or locker room without permission.</li>
-      <li>Possession or use of alcohol, tobacco/vaping products, or drugs at any team event.</li>
-    </ul>
+<h3>Unacceptable Behavior <span class="tag proposed">Proposed — confirm/edit</span></h3>
+<p>The following are not acceptable from anyone on this team, at any team activity (practice, game, tournament, locker room, or team travel):</p>
+<ul>
+<li>Disrespect toward officials, coaches, teammates, or opponents — arguing calls, taunting, verbal abuse.</li>
+<li>Fighting, or any attempt to injure another player, outside what happens within the normal course of play.</li>
+<li>Bullying, hazing, or excluding a teammate.</li>
+<li>Discriminatory language or behavior of any kind.</li>
+<li>Phones or recording devices used in the locker room.</li>
+<li>Unsportsmanlike conduct that reflects poorly on the team.</li>
+<li>Ignoring coaching instructions or team rules.</li>
+<li>Showing up late or unprepared without communicating with a coach in advance.</li>
+<li>Leaving the bench or locker room without permission.</li>
+<li>Possession or use of alcohol, tobacco/vaping products, or drugs at any team event.</li>
+</ul>
 
-    <h3>Discipline &amp; Suspensions <span class="tag proposed">Proposed — confirm/edit</span></h3>
-    <p>A tiered approach, drafted from common practice at other clubs. Coaches always retain discretion to escalate based on severity — this is a floor, not a rigid formula.</p>
-    <p>This isn't limited to team events. An issue at school or at home becomes an issue with this team too — how you carry yourself off the ice reflects on this team, and can result in consequences here.</p>
+<h3>Discipline &amp; Suspensions <span class="tag proposed">Proposed — confirm/edit</span></h3>
+<p>A tiered approach, drafted from common practice at other clubs. Coaches always retain discretion to escalate based on severity — this is a floor, not a rigid formula.</p>
+<p>This isn't limited to team events. An issue at school or at home becomes an issue with this team too — how you carry yourself off the ice reflects on this team, and can result in consequences here.</p>
 
-    <h4>Minor offenses</h4>
-    <p>(disrespectful remarks, arguing with an official, not following equipment/uniform rules, locker room disruption)</p>
-    <ol>
-      <li>First time: warning from a coach, conversation with the player.</li>
-      <li>Second time: sit out part of a practice or game.</li>
-      <li>Third time: one full game suspension, plus a conversation with the player and parent.</li>
-    </ol>
+<h4>Minor offenses</h4>
+<p>(disrespectful remarks, arguing with an official, not following equipment/uniform rules, locker room disruption)</p>
+<ol>
+<li>First time: warning from a coach, conversation with the player.</li>
+<li>Second time: sit out part of a practice or game.</li>
+<li>Third time: one full game suspension, plus a conversation with the player and parent.</li>
+</ol>
 
-    <h4>Serious offenses</h4>
-    <p>(fighting outside the whistle or instigating, abusive language/gestures toward an official, deliberate attempt to injure, hazing/bullying, unauthorized recording in the locker room, no-show without any notice)</p>
-    <ul>
-      <li>Minimum 1–2 game suspension, at the coaching staff's discretion.</li>
-      <li>A repeat serious offense adds additional games or removal from the team.</li>
-    </ul>
+<h4>Serious offenses</h4>
+<p>(fighting outside the whistle or instigating, abusive language/gestures toward an official, deliberate attempt to injure, hazing/bullying, unauthorized recording in the locker room, no-show without any notice)</p>
+<ul>
+<li>Minimum 1–2 game suspension, at the coaching staff's discretion.</li>
+<li>A repeat serious offense adds additional games or removal from the team.</li>
+</ul>
 
-    <h4>Zero-tolerance offenses</h4>
-    <p>(physical violence beyond the play of the game, harassment or discrimination, alcohol/drug/vape possession or use at a team event, hazing that causes harm)</p>
-    <ul>
-      <li>Immediate removal from that game or practice.</li>
-      <li>Multi-game suspension up to removal from the team for the season, at the coaching staff's and club leadership's discretion.</li>
-      <li>Handled per USA Hockey SafeSport policy where applicable.</li>
-    </ul>
-  </div>
+<h4>Zero-tolerance offenses</h4>
+<p>(physical violence beyond the play of the game, harassment or discrimination, alcohol/drug/vape possession or use at a team event, hazing that causes harm)</p>
+<ul>
+<li>Immediate removal from that game or practice.</li>
+<li>Multi-game suspension up to removal from the team for the season, at the coaching staff's and club leadership's discretion.</li>
+<li>Handled per USA Hockey SafeSport policy where applicable.</li>
+</ul>
+</div>
 </section>
 
 <section class="category" id="logistics">
-  <div class="cat-head"><span class="num">2</span><h2>Logistics</h2></div>
+<div class="cat-head"><span class="num">2</span><h2>Logistics</h2></div>
 
-  <div class="prose">
-    <h3>Before Games</h3>
-    <ul>
-      <li><strong>Arrive no later than 45 minutes before game time.</strong></li>
-      <li><strong>Off-ice warmup starts 40 minutes before game time — led by the captains.</strong></li>
-      <li>Be <strong>fully dressed before the Zamboni is on the ice.</strong></li>
-      <li>Bring both uniforms to every game. Captains/players confirm with the opposing team's coaches which jersey we're wearing and communicate that to the team before warmups.</li>
-      <li><strong>Be fully dressed 10 minutes before game time.</strong> Full attention as coaches talk through the game plan — focus areas, how we can win, expectations.</li>
-    </ul>
+<div class="prose">
+<h3>Before Games</h3>
+<ul>
+<li><strong>Arrive no later than 45 minutes before game time.</strong></li>
+<li><strong>Off-ice warmup starts 40 minutes before game time — led by the captains.</strong></li>
+<li>Be <strong>fully dressed before the Zamboni is on the ice.</strong></li>
+<li>Bring both uniforms to every game. Captains/players confirm with the opposing team's coaches which jersey we're wearing and communicate that to the team before warmups.</li>
+<li><strong>Be fully dressed 10 minutes before game time.</strong> Full attention as coaches talk through the game plan — focus areas, how we can win, expectations.</li>
+</ul>
 
-    <h3>After Games</h3>
-    <ul>
-      <li>When a coach enters the locker room, freeze — stop getting undressed and be ready to actively listen.</li>
-    </ul>
+<h3>After Games</h3>
+<ul>
+<li>When a coach enters the locker room, freeze — stop getting undressed and be ready to actively listen.</li>
+</ul>
 
-    <h3>Practice</h3>
-    <ul>
-      <li>Practice plans are posted by 2:00 PM on practice days (see Staying Informed above). Come with the right gear for what's planned and a general idea of the day's focus.</li>
-      <li>Same equipment standard as games: full gear including neck guards, correct jerseys and socks.</li>
-    </ul>
-  </div>
+<h3>Practice</h3>
+<ul>
+<li>Practice plans are posted by 2:00 PM on practice days (see Staying Informed above). Come with the right gear for what's planned and a general idea of the day's focus.</li>
+<li>Same equipment standard as games: full gear including neck guards, correct jerseys and socks.</li>
+</ul>
+</div>
 </section>
 
 <section class="category" id="systems">
-  <div class="cat-head"><span class="num">3</span><h2>Hockey Systems &amp; Strategy</h2></div>
-  <p class="cat-note">Each of these will get its own written-out system, with player responsibilities by position and key coaching points, as the season develops. Right now these are just the section headers reserved for that content.</p>
-  <div class="grid">
-    <div class="card"><h3>Forecheck</h3><p>Not yet added.</p></div>
-    <div class="card"><h3>Neutral Zone</h3><p>Not yet added.</p></div>
-    <div class="card"><h3>Defensive Zone</h3><p>Not yet added.</p></div>
-    <div class="card"><h3>Penalty Kill — In Zone</h3><p>Not yet added.</p></div>
-    <div class="card"><h3>Penalty Kill — Forecheck</h3><p>Not yet added.</p></div>
-    <div class="card"><h3>Power Play — Breakout</h3><p>Not yet added.</p></div>
-    <div class="card"><h3>Power Play — In Zone</h3><p>Not yet added.</p></div>
-    <div class="card"><h3>Offensive Zone Faceoffs</h3><p>Not yet added.</p></div>
-    <div class="card"><h3>Defensive Zone Faceoffs</h3><p>Not yet added.</p></div>
-  </div>
+<div class="cat-head"><span class="num">3</span><h2>Hockey Systems &amp; Strategy</h2></div>
+<p class="cat-note">These are the systems we're actually running with this team. Not everything is filled in yet — new pieces get added as we cover them at practice, and a few plays below still need a name confirmed or extra detail before they're final.</p>
+
+<div class="prose">
+<h3>Forecheck</h3>
+<p>Structure: <strong>2-1-2</strong>, tightening into something close to a <strong>2-3</strong> depending on the read.</p>
+<ul>
+<li><strong>F1</strong> — aggressive on the puck carrier.</li>
+<li><strong>F2</strong> — in support.</li>
+<li><strong>F3</strong> — stays high.</li>
+</ul>
+
+<h3>Neutral Zone — Regroup / Offense</h3>
+<ul>
+<li>At least 2 of our 3 forwards need to be moving — ideally all 3.</li>
+<li>Goal: collect the puck with speed so we can transition quickly.</li>
+</ul>
+
+<h3>Neutral Zone Forecheck</h3>
+<p>Two structures, used depending on the situation.</p>
+
+<h4>1-2-2 (Triangle)</h4>
+<ul>
+<li>Our three forwards form a triangle: one man pressures the puck; the other two sit at the bottom of the triangle, not chasing in line with the pressuring forward.</li>
+<li>Both defensemen push up as much as possible, closing gaps.</li>
+<li>As the puck moves D-to-D or through the neutral zone, maintain the triangle shape as much as possible.</li>
+</ul>
+
+<h4>1-3 — &quot;Valley Kil—&quot; (name TBC)</h4>
+<p>Already in the Drill Library and practiced last practice.</p>
+<ul>
+<li>Alignment: a 1 and a 3, with the &quot;1&quot; slightly forward of the &quot;3,&quot; offset to the right side.</li>
+<li>Goal: take away half the ice on the opponent's breakout, forcing them up one side.</li>
+<li>The strong-side player (lined up on the red line) gets aggressive support; the other two players drop back into coverage.</li>
+<li>Avoid giving up cutbacks — force the play up one side and keep it there.</li>
+</ul>
+<div class="callout"><strong>Confirm</strong>Exact name/spelling of this play.</div>
+
+<h3>Defensive Zone</h3>
+<p>Traditional coverage:</p>
+<ul>
+<li>One D always fronts the net.</li>
+<li>The other D goes to the puck when it's in the corner on their side.</li>
+<li>Wings avoid going below the hash marks/dots — except in an emergency.</li>
+<li>Centers support the puck at all times.</li>
+<li>Wings take good lines/angles to take away the shooting lane: when the opposing point/defenseman has the puck, take away the shot first, forcing the play back down the wall or away from the net.</li>
+</ul>
+
+<h3>Defensive Zone Faceoffs</h3>
+
+<h4>Stack (base alignment)</h4>
+<ul>
+<li>Always stack.</li>
+<li>The wing who'd normally line up on the boards side instead lines up in the middle and comes through the faceoff.</li>
+<li>Coverage progression if we don't win clean, in order: (1) the dot/puck, (2) the shooter, (3) the defenseman on the boards side.</li>
+<li>Everyone else on the draw has an assigned man/position and is expected to execute it.</li>
+</ul>
+
+<h4>&quot;Whiteout&quot; (win play — bench call)</h4>
+<ul>
+<li>On a clean win, puck goes back to the corner to the defenseman.</li>
+<li>The net-front wing (not the stack guy) breaks immediately, straight up ice toward the left hash marks of the center circle.</li>
+<li>The D banks a hard, indirect pass off the far-side boards, aiming just below the blue line, timed to meet the breaking forward. Well-timed, it can spring a breakaway.</li>
+<li>This is a bench call, not a player call — and it carries real risk.</li>
+<li>The D in front of the net must still cover their man, and we never force the pass through the middle unless it's completely open.</li>
+</ul>
+
+<h4>&quot;Doubles&quot;</h4>
+<ul>
+<li>Counter for when the other team puts two players in front of the net on the draw.</li>
+<li>We match it: both of our defensemen move to the front of the net, setting up 1-on-1 against their overloaded forwards.</li>
+</ul>
+
+<h3>Penalty Kill — In Zone</h3>
+<p>Basic <strong>box</strong>.</p>
+<ul>
+<li>Passive until it's the right time to be aggressive.</li>
+<li>Keep the puck outside — force shots/plays from outside &quot;the house.&quot;</li>
+<li>Puck comes into the house → get aggressive. Puck stays outside the house → stay passive.</li>
+<li>Be aggressive to win a loose or mishandled puck and clear it.</li>
+<li>Return to passive as soon as the opponent regains full control.</li>
+</ul>
+
+<h3>Penalty Kill — Forecheck <span class="tag addlater">Add later</span></h3>
+<p><em>Not yet added.</em></p>
+
+<h3>Power Play — Breakout</h3>
+<ul>
+<li>Three players come up the ice together; two swing through the neutral zone — timing first, speed second.</li>
+<li>Move up the ice as a unit.</li>
+<li>Try to fill four lanes as we enter the offensive zone.</li>
+<li>First priority: possess the puck into the zone.</li>
+<li>If we're met with pressure after crossing the red line and can't carry it in clean: chip and chase — not dump and chase. Put the puck to a spot with intention, where we expect to win the race to it, then regain possession and get into our zone offense.</li>
+</ul>
+
+<h3>Power Play — In Zone</h3>
+<p>Running a <strong>1-3-1</strong>.</p>
+<ul>
+<li>Settle in — don't force it. Move the puck to whoever's open, using the bumper as an outlet.</li>
+<li>Look to create offense from below the circles when the point has either the quarterback or the shooter loaded up.</li>
+<li>Net-front presence from our low guy.</li>
+<li>When the play is with the point/passer, drop the net-front guy below the goal line for a low play: low-to-bumper, or point-to-shooter-to-backdoor to the net-front/low guy.</li>
+</ul>
+
+<h3>Offensive Zone Faceoffs</h3>
+<ul>
+<li><strong>Diablo</strong> — C wins the draw and passes to RW, who passes back to D1 for a shot from the point; LW rolls to the front of the net for a screen; C trails in behind for the tip/rebound. <em>(Fully diagrammed with animation in the Rink Board tool.)</em></li>
+<li><strong>Bender</strong> — center sets up the shooter on the center's backhand side; wins the draw backhand back to the shooter, who shoots.</li>
+<li><strong>Double Supreme</strong> — stack two wings in front of the net; center takes the shot off the draw. Want the center on his forehand at the dot if possible.</li>
+</ul>
+<div class="callout"><strong>Add later</strong>Two more offensive-zone faceoff plays to add to the library (Coach to recall details).</div>
+</div>
 </section>
 
 <section class="category" id="open-items">
-  <div class="cat-head"><span class="num">&#9998;</span><h2>Open Items / To Decide</h2></div>
-  <div class="prose">
-    <ul>
-      <li>Channel for direct player-coach communication (text/app/email) + confirm coaches' contact info is shared with players.</li>
-      <li>How far in advance absences need to be reported.</li>
-      <li>All nine hockey systems sections.</li>
-    </ul>
-  </div>
+<div class="cat-head"><span class="num">&#9998;</span><h2>Open Items / To Decide</h2></div>
+<div class="prose">
+<ul>
+<li>Channel for direct player-coach communication (text/app/email) + confirm coaches' contact info is shared with players.</li>
+<li>How far in advance absences need to be reported.</li>
+<li>Confirm exact name/spelling of the &quot;Valley Kil—&quot; neutral-zone-forecheck play.</li>
+<li>Penalty Kill — Forecheck still needs to be written up.</li>
+<li>Two more offensive-zone faceoff plays to add.</li>
+</ul>
+</div>
 </section>
 
 </main>
 
 <footer>
-  Maintained by Coach Matt Cunha for 15U Select &middot; Junior Railers Hockey Club. Last updated September 8, 2026 — a work in progress, updated as the season goes.
+Maintained by Coach Matt Cunha for 15U Select &middot; Junior Railers Hockey Club. Last updated September 8, 2026 — a work in progress, updated as the season goes.
 </footer>
 </div>
 
 <script>
 (function () {
-  var HASH = "978d657be20a82b87941d32cb19f89140c2996a17c3cf5ce51843b50fa5074f2";
-  var STORE_KEY = "jrhc-team-handbook-unlocked";
+var HASH = "978d657be20a82b87941d32cb19f89140c2996a17c3cf5ce51843b50fa5074f2";
+var STORE_KEY = "jrhc-team-handbook-unlocked";
 
-  function sha256(text) {
-    var enc = new TextEncoder().encode(text);
-    return crypto.subtle.digest("SHA-256", enc).then(function (buf) {
-      return Array.from(new Uint8Array(buf)).map(function (b) {
-        return b.toString(16).padStart(2, "0");
-      }).join("");
-    });
-  }
+function sha256(text) {
+var enc = new TextEncoder().encode(text);
+return crypto.subtle.digest("SHA-256", enc).then(function (buf) {
+return Array.from(new Uint8Array(buf)).map(function (b) {
+return b.toString(16).padStart(2, "0");
+}).join("");
+});
+}
 
-  function reveal() {
-    document.getElementById("gate").style.display = "none";
-    document.getElementById("site-content").style.display = "";
-  }
+function reveal() {
+document.getElementById("gate").style.display = "none";
+document.getElementById("site-content").style.display = "";
+}
 
-  function tryUnlock() {
-    var val = document.getElementById("gatePw").value;
-    sha256(val).then(function (digest) {
-      if (digest === HASH) {
-        try { localStorage.setItem(STORE_KEY, "1"); } catch (e) {}
-        reveal();
-      } else {
-        document.getElementById("gateErr").textContent = "That's not it — try again.";
-      }
-    });
-  }
+function tryUnlock() {
+var val = document.getElementById("gatePw").value;
+sha256(val).then(function (digest) {
+if (digest === HASH) {
+try { localStorage.setItem(STORE_KEY, "1"); } catch (e) {}
+reveal();
+} else {
+document.getElementById("gateErr").textContent = "That's not it — try again.";
+}
+});
+}
 
-  var already = false;
-  try { already = localStorage.getItem(STORE_KEY) === "1"; } catch (e) {}
-  if (already) {
-    reveal();
-  } else {
-    document.getElementById("gateBtn").addEventListener("click", tryUnlock);
-    document.getElementById("gatePw").addEventListener("keydown", function (e) {
-      if (e.key === "Enter") tryUnlock();
-    });
-    document.getElementById("gatePw").focus();
-  }
+var already = false;
+try { already = localStorage.getItem(STORE_KEY) === "1"; } catch (e) {}
+if (already) {
+reveal();
+} else {
+document.getElementById("gateBtn").addEventListener("click", tryUnlock);
+document.getElementById("gatePw").addEventListener("keydown", function (e) {
+if (e.key === "Enter") tryUnlock();
+});
+document.getElementById("gatePw").focus();
+}
 })();
-  </script>
+</script>
