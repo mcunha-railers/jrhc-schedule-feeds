@@ -377,6 +377,54 @@ font-size: 0.82rem;
 
 html { scroll-behavior: smooth; }
 
+.img-link {
+color: inherit;
+text-decoration: underline;
+text-decoration-style: dotted;
+text-underline-offset: 3px;
+cursor: pointer;
+background: none;
+border: none;
+font: inherit;
+padding: 0;
+}
+.img-link:hover { color: var(--crease-blue); }
+
+.lightbox {
+position: fixed;
+inset: 0;
+z-index: 60;
+background: color-mix(in srgb, var(--rink-navy-deep) 92%, transparent);
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 3vh 3vw;
+}
+.lightbox[hidden] { display: none; }
+.lightbox img {
+max-width: 94vw;
+max-height: 90vh;
+border-radius: 10px;
+box-shadow: 0 30px 90px rgba(0,0,0,0.5);
+display: block;
+}
+.lightbox-close {
+position: fixed;
+top: 1rem;
+right: 1.2rem;
+z-index: 5;
+width: 2.5rem;
+height: 2.5rem;
+border-radius: 50%;
+border: 1px solid var(--line);
+background: var(--surface);
+color: var(--ink);
+font-size: 1.2rem;
+cursor: pointer;
+box-shadow: 0 4px 14px rgba(15,44,82,0.2);
+}
+.lightbox-close:hover { border-color: var(--crease-blue); color: var(--crease-blue); }
+
 @media (max-width: 640px) {
 header.top { padding: 2rem 1.1rem 1.6rem; }
 main { padding: 1.2rem 1.1rem 3rem; }
@@ -439,7 +487,7 @@ main { padding: 1.2rem 1.1rem 3rem; }
 <h3>Staying Informed (Crossbar)</h3>
 <ul>
 <li>Check Crossbar regularly. Schedule changes, jersey info, and team communications get posted there — it's each player's job to stay on top of it.</li>
-<li>Practice plans are typically posted by <strong>2:00 PM on practice days</strong>. Review the plan before you get to the rink — have a general idea of what we're working on and come prepared.</li>
+<li>Practice plans are typically posted by <strong>2:00 PM on practice days</strong>. Review the plan before you get to the rink — have a general idea of what we're working on and come prepared, both mentally and physically.</li>
 </ul>
 
 <h3>Attendance</h3>
@@ -454,14 +502,14 @@ main { padding: 1.2rem 1.1rem 3rem; }
 <h3>Equipment &amp; Uniforms</h3>
 <ul>
 <li>Full equipment at every practice and game — this includes neck guards. No exceptions.</li>
-<li>Correct jerseys and correct socks — know what we're wearing before you show up.</li>
-<li>Bring <strong>both uniforms (home and away) to every game.</strong> Captains and players are responsible for figuring out which jersey the team is wearing — communicate with the other team's coaches to confirm before warmups.</li>
+<li>Correct jerseys and correct socks for practices and games — know what we're wearing before you show up.</li>
+<li>Bring <strong>both uniforms (home and away) to every game.</strong> Captains and players are responsible for figuring out which jersey the team is wearing — communicate with the other team's coaches to confirm before warmups. Come prepared to each game — no one, including coaches, should be searching for spare jerseys on game day.</li>
 </ul>
 
 <h3>Playing Time, Lineups &amp; Goalies</h3>
 <ul>
 <li><strong>Playing time is not even — it's earned.</strong> Coaches play the players who give the team the best chance to win — based on commitment, performance, attitude, and everything else that goes into being a good teammate.</li>
-<li><strong>Alternates:</strong> we carry 3 alternates. They're called on to play when the full-time roster (3 lines, 6 D, and 2 G) isn't fully available for a game.</li>
+<li><strong>Alternates:</strong> we carry 3 alternates — Lucey, Reissner, Nordman. They're called on to play when the full-time roster (3 lines, 6 D, and 2 G) isn't fully available for a game.</li>
 <li><strong>Goalies:</strong> we want our goalies playing full games. We'll alternate goalies throughout the season and announce who's playing the upcoming weekend at Thursday's practice.
 <ul>
 <li>If we feel a mid-game goalie change could have a positive impact on the game or the team, that can happen. We'll try to prepare goalies for what to expect, but part of being a goalie — especially if you didn't start — is being ready to help your team the moment you're called on.</li>
@@ -474,7 +522,6 @@ main { padding: 1.2rem 1.1rem 3rem; }
 <li>You represent yourself, your team, the Junior Railers, and your family — at all times, everywhere: on the ice, on the bench, in the locker room, at school, and at home. Make the right choices.</li>
 <li>Be respectful to teammates, coaches, officials, opponents, and rink staff.</li>
 <li>Support each other — on the bench, in the room, and outside the rink.</li>
-<li>Locker rooms must be left clean — every time, every rink.</li>
 </ul>
 
 <h3>Locker Room Policy</h3>
@@ -482,6 +529,7 @@ main { padding: 1.2rem 1.1rem 3rem; }
 <ul>
 <li>No cell phones or other recording-capable devices used in the locker room.</li>
 <li>Only players, coaches, and approved team personnel in the locker room — no outside visitors.</li>
+<li><button type="button" class="img-link" data-img="assets/locker-room-clean.jpg">Locker rooms must be left clean</button> — every time, every rink.</li>
 </ul>
 
 <h3>Unacceptable Behavior</h3>
@@ -495,11 +543,10 @@ main { padding: 1.2rem 1.1rem 3rem; }
 <li>Unsportsmanlike conduct that reflects poorly on the team.</li>
 <li>Ignoring coaching instructions or team rules.</li>
 <li>Showing up late or unprepared without communicating with a coach in advance.</li>
-<li>Leaving the bench or locker room without permission.</li>
 <li>Possession or use of alcohol, tobacco/vaping products, or drugs at any team event.</li>
 </ul>
 
-<h3>Discipline &amp; Suspensions <span class="tag proposed">Proposed — confirm/edit</span></h3>
+<h3>Discipline &amp; Suspensions</h3>
 <p>A tiered approach, drafted from common practice at other clubs. Coaches always retain discretion to escalate based on severity — this is a floor, not a rigid formula.</p>
 <p>This isn't limited to team events. An issue at school or at home becomes an issue with this team too — how you carry yourself off the ice reflects on this team, and can result in consequences here.</p>
 
@@ -535,7 +582,7 @@ main { padding: 1.2rem 1.1rem 3rem; }
 <h3>Before Games</h3>
 <ul>
 <li><strong>Arrive no later than 45 minutes before game time.</strong></li>
-<li><strong>Off-ice warmup starts 40 minutes before game time — led by the captains.</strong></li>
+<li><strong>Off-ice warmup starts 40 minutes before game time — led by the captains.</strong> It must be organized and planned — captains own this; if it isn't working, we'll provide a plan to execute. Everyone participates (goalies are the only exception, if they have their own routine).</li>
 <li>Bring both uniforms to every game. Captains/players confirm with the opposing team's coaches which jersey we're wearing and communicate that to the team before warmups.</li>
 <li>Be <strong>fully dressed before the Zamboni is on the ice.</strong> By 10 minutes before game time, give full attention as coaches talk through the game plan — focus areas, how we can win, expectations.</li>
 </ul>
@@ -555,6 +602,8 @@ main { padding: 1.2rem 1.1rem 3rem; }
 <li>Be present, both physically and mentally. Ask questions — this is the time to learn.</li>
 <li>Practice will be fun at times, fast at times, and slow or repetitive at times as we work through systems — understand that, and embrace it.</li>
 <li>If a coach is explaining something to one player, everyone else should be listening too — we don't want to repeat the same explanation multiple times.</li>
+<li>Help set up and transition between drills — pucks, nets, and other equipment — as we move from one drill to the next.</li>
+<li>If we're the last team on the rink for the night, bring the puck bag up to the Coaches Room — door code 1944.</li>
 <li>Same equipment standard as games: full gear including neck guards, correct jerseys and socks.</li>
 </ul>
 </div>
@@ -695,6 +744,11 @@ Maintained by Coach Matt Cunha for 15U Select &middot; Junior Railers Hockey Clu
 </footer>
 </div>
 
+<div class="lightbox" id="lightbox" hidden>
+<button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close image">&#10005;</button>
+<img id="lightboxImg" src="" alt="">
+</div>
+
 <script>
 (function () {
 var HASH = "978d657be20a82b87941d32cb19f89140c2996a17c3cf5ce51843b50fa5074f2";
@@ -737,5 +791,35 @@ if (e.key === "Enter") tryUnlock();
 });
 document.getElementById("gatePw").focus();
 }
+})();
+
+(function () {
+var lightbox = document.getElementById("lightbox");
+var lightboxImg = document.getElementById("lightboxImg");
+
+function openLightbox(src, alt) {
+lightboxImg.src = src;
+lightboxImg.alt = alt || "";
+lightbox.hidden = false;
+}
+function closeLightbox() {
+lightbox.hidden = true;
+lightboxImg.src = "";
+}
+
+document.addEventListener("click", function (e) {
+var trigger = e.target.closest(".img-link");
+if (trigger) {
+e.preventDefault();
+openLightbox(trigger.getAttribute("data-img"), trigger.textContent);
+}
+});
+document.getElementById("lightboxClose").addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", function (e) {
+if (e.target === lightbox) closeLightbox();
+});
+document.addEventListener("keydown", function (e) {
+if (e.key === "Escape" && !lightbox.hidden) closeLightbox();
+});
 })();
 </script>
