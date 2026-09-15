@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Schedule Status</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F4F7FA;
+    --surface: #FFFFFF;
+    --surface-2: #EBF0F5;
+    --ink: #141A22;
+    --ink-soft: #4B5768;
+    --ink-mute: #7A8699;
+    --border: #DCE3EC;
+    --border-strong: #C3CEDC;
+    --accent: #215D82;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #E4EEF5;
+    --good: #1C8A57;
+    --good-bg: #E4F5EC;
+    --good-border: #B6E1C9;
+    --warn: #9A6B0C;
+    --warn-bg: #FBF0DA;
+    --warn-border: #EDD49B;
+    --bad: #B83A3A;
+    --bad-bg: #FBEAEA;
+    --bad-border: #EFC0C0;
+    --shadow: 0 1px 2px rgba(20,26,34,0.05), 0 8px 24px -12px rgba(20,26,34,0.18);
+    --radius: 10px;
+    --font-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+    --font-body: "Public Sans", -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #0D1218;
+      --surface: #151C25;
+      --surface-2: #1B2430;
+      --ink: #E9EEF4;
+      --ink-soft: #ACB8C7;
+      --ink-mute: #78899E;
+      --border: #263140;
+      --border-strong: #34435780;
+      --accent: #6FA8D0;
+      --accent-ink: #06131C;
+      --accent-soft: #16283580;
+      --good: #4FBF8A;
+      --good-bg: #12301F80;
+      --good-border: #235438;
+      --warn: #E0AE4A;
+      --warn-bg: #34290C80;
+      --warn-border: #5B4718;
+      --bad: #E5817B;
+      --bad-bg: #3A171480;
+      --bad-border: #5F2724;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -14px rgba(0,0,0,0.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #0D1218;
+    --surface: #151C25;
+    --surface-2: #1B2430;
+    --ink: #E9EEF4;
+    --ink-soft: #ACB8C7;
+    --ink-mute: #78899E;
+    --border: #263140;
+    --border-strong: #34435780;
+    --accent: #6FA8D0;
+    --accent-ink: #06131C;
+    --accent-soft: #16283580;
+    --good: #4FBF8A;
+    --good-bg: #12301F80;
+    --good-border: #235438;
+    --warn: #E0AE4A;
+    --warn-bg: #34290C80;
+    --warn-border: #5B4718;
+    --bad: #E5817B;
+    --bad-bg: #3A171480;
+    --bad-border: #5F2724;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -14px rgba(0,0,0,0.6);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--font-body); font-size:14px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:1280px; margin:0 auto; padding-inline:20px; }
+  a{ color:var(--accent); }
+  ::selection{ background:var(--accent-soft); }
+  button, input{ font-family:inherit; }
+  :focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  /* ---------- Topbar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:saturate(160%) blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar-inner{
+    display:flex; align-items:flex-end; justify-content:space-between; gap:24px;
+    padding-block:16px 14px; flex-wrap:wrap;
+  }
+  .title-block h1{
+    font-family:var(--font-display); font-weight:800; font-size:clamp(26px,4vw,34px);
+    letter-spacing:0.01em; margin:0; text-wrap:balance; color:var(--ink);
+  }
+  .title-block .meta{
+    margin-top:4px; color:var(--ink-soft); font-size:12.5px;
+    font-family:var(--font-mono); letter-spacing:0.01em;
+  }
+  .legend{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+  .legend-item{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-soft); }
+  .dot{ width:9px; height:9px; border-radius:50%; flex:none; }
+  .dot.good{ background:var(--good); }
+  .dot.warn{ background:var(--warn); }
+  .dot.bad{ background:var(--bad); }
+
+  /* ---------- Stat tiles ---------- */
+  .stats{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr));
+    gap:10px; margin-block:18px;
+  }
+  .stat{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:13px 14px; display:flex; flex-direction:column; gap:4px;
+    font-family:inherit; text-align:left; width:100%;
+  }
+  .stat.clickable{ cursor:pointer; transition:border-color .12s ease, box-shadow .12s ease, transform .12s ease; }
+  .stat.clickable:hover{ border-color:var(--border-strong); box-shadow:var(--shadow); transform:translateY(-1px); }
+  .stat.clickable.active{ border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; background:var(--accent-soft); }
+  .stat .n{ font-family:var(--font-mono); font-weight:600; font-size:24px; font-variant-numeric:tabular-nums; line-height:1; }
+  .stat .n.good{ color:var(--good); } .stat .n.warn{ color:var(--warn); } .stat .n.bad{ color:var(--bad); }
+  .stat .l{ font-size:12px; color:var(--ink-soft); }
+  .stat .s{ font-size:11px; color:var(--ink-mute); }
+  .stat .l::after{ content:"→"; opacity:0; margin-left:5px; transition:opacity .12s ease; }
+  .stat.clickable:hover .l::after{ opacity:0.6; }
+
+  /* ---------- Controls ---------- */
+  .controls{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    margin-bottom:12px;
+  }
+  .search{
+    flex:1 1 220px; max-width:340px;
+    background:var(--surface); border:1px solid var(--border-strong); border-radius:8px;
+    padding:8px 12px; color:var(--ink); font-size:13px;
+  }
+  .search::placeholder{ color:var(--ink-mute); }
+  .chips{ display:flex; gap:6px; flex-wrap:wrap; }
+  .chip{
+    border:1px solid var(--border-strong); background:var(--surface); color:var(--ink-soft);
+    border-radius:999px; padding:6px 12px; font-size:12.5px; cursor:pointer; white-space:nowrap;
+  }
+  .chip[aria-pressed="true"]{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+  .toggle{
+    display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink-soft);
+    border:1px solid var(--border-strong); border-radius:999px; padding:6px 12px 6px 10px;
+    background:var(--surface); cursor:pointer; margin-left:auto;
+  }
+  .toggle input{ accent-color:var(--accent); }
+  .tile-filter-note{
+    display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:500;
+    border:1px solid var(--accent); border-radius:999px; padding:6px 10px 6px 12px;
+    background:var(--accent-soft); color:var(--accent); cursor:pointer; margin-left:auto;
+    font-family:inherit;
+  }
+  .tile-filter-note::after{ content:"✕"; font-size:10px; opacity:0.75; }
+  .count-note{ font-size:12px; color:var(--ink-mute); font-family:var(--font-mono); }
+
+  .th-check, td.td-check{ width:34px; padding-inline:12px 4px !important; }
+  input[type=checkbox]{ accent-color:var(--accent); width:15px; height:15px; cursor:pointer; }
+  tr.is-selected{ background:var(--accent-soft); }
+
+  .recheck-bar{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    margin-top:10px; padding:10px 14px; border-radius:var(--radius);
+    background:var(--accent-soft); border:1px solid var(--accent);
+  }
+  .recheck-bar #recheck-count{ font-family:var(--font-mono); font-weight:600; font-size:12.5px; color:var(--accent); white-space:nowrap; }
+  .btn-primary{
+    background:var(--accent); color:var(--accent-ink); border:none; border-radius:7px;
+    padding:7px 13px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;
+  }
+  .btn-primary:hover{ filter:brightness(1.08); }
+  .btn-plain{
+    background:transparent; color:var(--ink-soft); border:1px solid var(--border-strong); border-radius:7px;
+    padding:7px 13px; font-size:12.5px; cursor:pointer; font-family:inherit;
+  }
+  .recheck-hint{ font-size:11.5px; color:var(--ink-mute); flex:1 1 220px; }
+  .recheck-fallback{
+    width:100%; margin-top:8px; box-sizing:border-box; min-height:100px;
+    font-family:var(--font-mono); font-size:11.5px; color:var(--ink);
+    background:var(--surface); border:1px solid var(--border-strong); border-radius:8px; padding:10px;
+  }
+
+  /* ---------- Board / table ---------- */
+  .board-wrap{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); overflow:hidden; margin-bottom:26px;
+  }
+  .scroll{ overflow:auto; max-height:min(620px, 66vh); }
+  table{ border-collapse:collapse; width:100%; min-width:960px; }
+  thead th{
+    position:sticky; top:0; z-index:5;
+    background:var(--surface-2); text-align:left; font-size:11px; letter-spacing:0.04em;
+    text-transform:uppercase; color:var(--ink-mute); font-weight:600;
+    padding:10px 12px; border-bottom:1px solid var(--border);
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:9px 12px; border-bottom:1px solid var(--border);
+    vertical-align:middle; font-size:13px;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background:var(--surface-2); }
+  .dt{ font-family:var(--font-mono); font-size:12.5px; white-space:nowrap; }
+  .dt .d{ color:var(--ink); font-weight:500; }
+  .dt .r{ color:var(--ink-mute); display:block; font-size:11px; margin-top:1px; }
+  .league-badge{
+    font-family:var(--font-mono); font-size:10.5px; font-weight:600; letter-spacing:0.03em;
+    padding:2px 7px; border-radius:5px; white-space:nowrap; display:inline-block;
+  }
+  .league-badge.E9{ background:var(--accent-soft); color:var(--accent); }
+  .league-badge.NEGHL{ background:#F1E6F7; color:#7A4B98; }
+  .league-badge.Independent{ background:var(--surface-2); color:var(--ink-soft); border:1px solid var(--border-strong); }
+  :root[data-theme="dark"] .league-badge.NEGHL, @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .league-badge.NEGHL{ background:#2A1E33; color:#D6AEEA; } }
+  .matchup{ max-width:230px; }
+  .matchup .home{ color:var(--ink); font-weight:500; }
+  .matchup .vs{ color:var(--ink-mute); font-size:11px; margin:0 3px; }
+  .matchup .away{ color:var(--ink-soft); }
+
+  .pill{
+    display:inline-flex; align-items:center; gap:6px; padding:4px 9px 4px 7px;
+    border-radius:999px; font-size:12px; font-weight:500; border:1px solid transparent;
+    cursor:default; white-space:nowrap; max-width:100%;
+  }
+  .pill .dot{ width:7px; height:7px; }
+  .pill.good{ background:var(--good-bg); color:var(--good); border-color:var(--good-border); }
+  .pill.warn{ background:var(--warn-bg); color:var(--warn); border-color:var(--warn-border); }
+  .pill.bad{ background:var(--bad-bg); color:var(--bad); border-color:var(--bad-border); }
+  .pill:focus-visible{ outline-offset:2px; }
+
+  tr.is-hidden{ display:none; }
+
+  /* ---------- Tooltip ---------- */
+  #tooltip{
+    position:fixed; z-index:100; max-width:300px; padding:10px 12px;
+    background:var(--ink); color:var(--bg); font-size:12.5px; line-height:1.45;
+    border-radius:8px; box-shadow:0 10px 30px -8px rgba(0,0,0,0.45);
+    pointer-events:none; opacity:0; transform:translateY(4px);
+    transition:opacity .12s ease, transform .12s ease;
+  }
+  #tooltip.show{ opacity:1; transform:translateY(0); }
+  #tooltip .tt-label{ font-weight:700; margin-bottom:3px; display:block; }
+
+  /* ---------- Sections ---------- */
+  section.block{ margin-bottom:30px; }
+  h2.section-h{
+    font-family:var(--font-display); font-weight:700; font-size:20px; letter-spacing:0.01em;
+    margin:0 0 4px 0; display:flex; align-items:center; gap:10px;
+  }
+  .section-sub{ color:var(--ink-soft); font-size:12.5px; margin:0 0 14px 0; max-width:70ch; }
+
+  .review-card{
+    background:var(--surface); border:1px solid var(--warn-border); border-left:3px solid var(--warn);
+    border-radius:var(--radius); padding:13px 16px; margin-bottom:10px;
+  }
+  .review-card .rc-top{ display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:baseline; }
+  .review-card .rc-match{ font-weight:600; color:var(--ink); }
+  .review-card .rc-meta{ font-family:var(--font-mono); font-size:11.5px; color:var(--ink-mute); white-space:nowrap; }
+  .review-card .rc-note{ margin-top:6px; color:var(--ink-soft); font-size:13px; }
+  .review-card .rc-src{ font-size:11px; color:var(--ink-mute); margin-top:6px; text-transform:uppercase; letter-spacing:0.04em; }
+
+  ol.steps{ list-style:none; margin:0; padding:0; counter-reset:step; display:flex; flex-direction:column; gap:10px; }
+  .step{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:13px 16px 13px 14px; display:flex; gap:12px; align-items:flex-start;
+  }
+  .step-num{
+    font-family:var(--font-mono); font-weight:600; font-size:12.5px; color:var(--accent);
+    background:var(--accent-soft); width:24px; height:24px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; flex:none; margin-top:1px;
+  }
+  .step label{ display:flex; gap:10px; align-items:flex-start; cursor:pointer; flex:1; }
+  .step input[type=checkbox]{ margin-top:3px; accent-color:var(--accent); flex:none; }
+  .step-body strong{ display:block; color:var(--ink); font-size:13.5px; margin-bottom:2px; }
+  .step-body span{ color:var(--ink-soft); font-size:13px; }
+  .step.done .step-body strong, .step.done .step-body span{ text-decoration:line-through; text-decoration-color:var(--border-strong); color:var(--ink-mute); }
+  .step.done .step-num{ background:var(--good-bg); color:var(--good); }
+  .completed-wrap{ margin-top:14px; }
+  .completed-summary{
+    cursor:pointer; font-size:12.5px; color:var(--ink-soft); font-weight:600; list-style:none;
+    padding:4px 2px;
+  }
+  .completed-summary::before{ content:"▸ "; }
+  .completed-wrap[open] .completed-summary::before{ content:"▾ "; }
+  .steps-done{ margin-top:8px; opacity:0.85; }
+  details.drafts{ margin-top:8px; }
+  details.drafts summary{
+    cursor:pointer; font-size:12px; color:var(--accent); font-weight:600; list-style:none;
+  }
+  details.drafts summary::before{ content:"▸ "; }
+  details.drafts[open] summary::before{ content:"▾ "; }
+  .draft{
+    margin-top:8px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+    padding:10px 12px; font-size:12.5px; position:relative;
+  }
+  .draft + .draft{ margin-top:6px; }
+  .draft .subj{ font-weight:600; color:var(--ink); margin-bottom:3px; padding-right:74px; }
+  .copy-draft-btn{
+    position:absolute; top:8px; right:8px; display:flex; align-items:center; gap:4px;
+    background:var(--surface); border:1px solid var(--border-strong); border-radius:6px;
+    padding:4px 8px; font-size:11px; font-weight:600; color:var(--ink-soft);
+    cursor:pointer; font-family:inherit;
+  }
+  .copy-draft-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .copy-draft-btn.copied{ border-color:var(--good); color:var(--good); background:var(--good-bg); }
+  .copy-draft-btn svg{ width:11px; height:11px; flex:none; }
+  .draft .body{ color:var(--ink-soft); white-space:pre-line; }
+
+  footer{ color:var(--ink-mute); font-size:11.5px; padding-block:18px 30px; border-top:1px solid var(--border); }
+
+  @media (max-width:640px){
+    .topbar-inner{ align-items:flex-start; }
+    .toggle{ margin-left:0; }
+  }
+</style>
+
+<style>
+  :root{color-scheme:light}
+  body{margin:0;padding:0}
+  [hidden]{display:none!important}
+  #lock-screen{
+    position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center;
+    background:#0D1218; color:#E9EEF4; font-family:"Public Sans",-apple-system,"Segoe UI",sans-serif;
+    padding:20px;
+  }
+  #lock-card{
+    width:100%; max-width:340px; background:#151C25; border:1px solid #263140; border-radius:12px;
+    padding:28px 26px; box-shadow:0 12px 28px -14px rgba(0,0,0,0.6);
+  }
+  #lock-card h2{
+    font-family:"Big Shoulders Display","Arial Narrow",sans-serif; font-weight:800; font-size:22px;
+    margin:0 0 4px 0; color:#fff; letter-spacing:0.01em;
+  }
+  #lock-card p{ margin:0 0 18px 0; font-size:12.5px; color:#ACB8C7; }
+  #lock-pw{
+    width:100%; box-sizing:border-box; background:#0D1218; border:1px solid #34435780; border-radius:7px;
+    padding:10px 12px; color:#E9EEF4; font-size:14px; margin-bottom:10px;
+  }
+  #lock-pw:focus{ outline:2px solid #6FA8D0; outline-offset:1px; }
+  #lock-submit{
+    width:100%; background:#6FA8D0; color:#06131C; border:none; border-radius:7px;
+    padding:10px 12px; font-size:13.5px; font-weight:700; cursor:pointer; font-family:inherit;
+  }
+  #lock-submit:hover{ filter:brightness(1.08); }
+  #lock-error{ color:#E5817B; font-size:12px; margin-top:10px; min-height:14px; }
+</style>
+</head>
+<body>
+<div id="lock-screen">
+  <div id="lock-card">
+    <h2>Schedule Status</h2>
+    <p>Junior Railers / White Hawks — enter the access password to view.</p>
+    <form id="lock-form" autocomplete="off">
+      <input id="lock-pw" type="password" placeholder="Password" autocomplete="off" aria-label="Password">
+      <button id="lock-submit" type="submit">Unlock</button>
+      <div id="lock-error"></div>
+    </form>
+  </div>
+</div>
+<div id="page-content" hidden>
+<div class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="title-block">
+      <h1>Schedule Status</h1>
+      <div class="meta">WIC Weekend Sheet games · Sept 14 – Nov 9, 2026 · updated Sept 14, 2026 (1 game re-checked Sept 15)</div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><span class="dot good"></span>Matches / confirmed</div>
+      <div class="legend-item"><span class="dot warn"></span>Needs attention, not urgent</div>
+      <div class="legend-item"><span class="dot bad"></span>Confirmed wrong or missing</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="stats" id="stats"></div>
+
+  <section class="block">
+    <div class="controls">
+      <input class="search" id="search" type="search" placeholder="Search team, rink, opponent…" aria-label="Search games">
+      <div class="chips" id="league-chips"></div>
+      <button class="tile-filter-note" id="tile-filter-note" hidden></button>
+    </div>
+
+    <div class="board-wrap">
+      <div class="scroll">
+        <table id="board-table">
+          <thead>
+            <tr>
+              <th class="th-check"><input type="checkbox" id="select-all" aria-label="Select all visible rows"></th>
+              <th>Date / Time</th>
+              <th>Rink</th>
+              <th>League</th>
+              <th>Matchup (Home vs. Away)</th>
+              <th>juniorrailers.com</th>
+              <th>E9 / NEGHL Site</th>
+              <th>Ref Portal</th>
+            </tr>
+          </thead>
+          <tbody id="board-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="count-note" id="row-count"></div>
+    <div class="recheck-bar" id="recheck-bar" hidden>
+      <span id="recheck-count">0 selected</span>
+      <button class="btn-primary" id="recheck-copy">Copy re-check request</button>
+      <button class="btn-plain" id="recheck-clear">Clear selection</button>
+      <span class="recheck-hint">Paste it back into the chat with Claude — the board itself can't re-pull live data, only Claude's browser/site tools can.</span>
+    </div>
+    <textarea id="recheck-fallback" class="recheck-fallback" hidden aria-label="Re-check request text — copy manually" readonly></textarea>
+  </section>
+
+  <section class="block">
+    <h2 class="section-h">Not on the WIC Sheet — Needs Review</h2>
+    <p class="section-sub">Games spotted on another source with no corresponding WIC Weekend Sheet row at all — not part of the game-by-game board above, but worth a manual look.</p>
+    <div id="not-on-sheet"></div>
+  </section>
+
+  <section class="block">
+    <h2 class="section-h">Suggested Next Steps</h2>
+    <p class="section-sub">Checking one off here is just for your own tracking on this page — it doesn't send anything or change the sheets. Checked items move down into Completed, saved in this browser.</p>
+    <div id="steps-container">
+      <ol class="steps" id="steps"></ol>
+      <p class="section-sub" id="steps-empty" hidden>Nothing open — everything's checked off.</p>
+      <details class="completed-wrap" id="completed-wrap" hidden>
+        <summary class="completed-summary">Completed (<span id="completed-count">0</span>)</summary>
+        <ol class="steps steps-done" id="steps-done"></ol>
+      </details>
+    </div>
+  </section>
+
+  <footer>
+    Built from the Sept 14, 2026 five-source reconciliation (ref portal, WIC Weekend Sheet, E9 export, NEGHL, juniorrailers.com). Ref portal has games loaded only through 10/31 — Nov 1–9 rows show "not loaded yet" until Bob's next load. juniorrailers.com was checked date-by-date across all 57 days in the window (not just the 17 dates with a game elsewhere), so a stray listing with no match in any other source would show up here too — see "Not on the WIC Sheet" above.
+  </footer>
+</div>
+
+<div id="tooltip" role="tooltip"></div>
+</div>
+
+<script>
+const COPY_ICON = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5.5" y="5.5" width="8" height="8" rx="1.3"/><path d="M3 10.5V3.3A1.3 1.3 0 0 1 4.3 2h7.2"/></svg>';
+const GAMES = [{"rink":"GRAY RINK","date":"9/20/2026","day":"Sun","start":"1:30 PM","end":"2:40 PM","assigned":"WH","home":"WWH10Blue","away":"BJE10Gold","league":"NEGHL","notes":"moved from 4:10pm, league approved","id":0,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"green","label":"2 officials assigned","detail":"Correct date, time, rink, and age label, with a full crew of 2 officials assigned."},"tile_officials":false,"tile_notloaded":false,"tile_confirmed":true,"tile_action":false},{"rink":"GRAY RINK","date":"9/20/2026","day":"Sun","start":"2:50 PM","end":"4:00 PM","assigned":"WH","home":"WWH8A","away":"BJT8N","league":"NEGHL","notes":"","id":1,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"green","label":"2 officials assigned","detail":"Correct date, time, rink, and age label, with a full crew of 2 officials assigned."},"tile_officials":false,"tile_notloaded":false,"tile_confirmed":true,"tile_action":false},{"rink":"BLUE RINK","date":"9/20/2026","day":"Sun","start":"3:50 PM","end":"5:10 PM","assigned":"E9","home":"Junior Railers U16 - Select","away":"RI Saints U16 - Select","league":"E9","notes":"","id":2,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"green","label":"2 officials assigned","detail":"Correct date, time, rink, and age label, with a full crew of 2 officials assigned."},"tile_officials":false,"tile_notloaded":false,"tile_confirmed":true,"tile_action":false},{"rink":"GRAY RINK","date":"9/20/2026","day":"Sun","start":"4:10 PM","end":"5:20 PM","assigned":"E9","home":"Junior Railers 16 - Select 1","away":"Boston Jr. Bruins 16 - Elite","league":"E9","notes":"moved from 1:20pm Blue, confirmed by league","id":3,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Re-checked 9/15: still correct home/away, date, time, and team names on juniorrailers.com (listed as \"2016 AAA Select\" vs. \"Boston Jr. Bruins 16 - Elite\", 4:10-5:20 PM, Worcester Gray)."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names. Not re-verified on this pass (admin.vahockey.com was still showing a login wall) \u2014 status carried over from the last full check."},"ref":{"status":"green","label":"2 officials assigned","detail":"Re-checked 9/15: a ref portal row now exists for this exact date/time/rink (Sun 9/20, 4:10pm, Worcester Ice Center Gray) with 2 officials assigned \u2014 Cameron Egan and Austin Poulton. The earlier \"missing from ref portal\" issue is resolved. The row\u2019s age code reads \"10U,\" which looked like a mislabel at first glance, but the ref portal\u2019s age codes are birth-year notation (10U = 2016s, per the club\u2019s own mapping) \u2014 so \"10U\" correctly denotes the 2016 birth year / 16 - Select 1 team. Correctly matched, no action needed."},"tile_officials":false,"tile_notloaded":false,"tile_confirmed":true,"tile_action":false},{"rink":"BLUE RINK","date":"9/20/2026","day":"Sun","start":"5:20 PM","end":"6:40 PM","assigned":"E9","home":"Junior Railers U18 - Select","away":"EC Wizards U18 - Elite","league":"E9","notes":"","id":4,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"green","label":"2 officials assigned","detail":"Correct date, time, rink, and age label, with a full crew of 2 officials assigned."},"tile_officials":false,"tile_notloaded":false,"tile_confirmed":true,"tile_action":false},{"rink":"GRAY RINK","date":"9/20/2026","day":"Sun","start":"5:30 PM","end":"7:00 PM","assigned":"U19 WH","home":"WWH10White","away":"NEW10Black","league":"NEGHL","notes":"","id":5,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"green","label":"2 officials assigned","detail":"Correct date, time, rink, and age label, with a full crew of 2 officials assigned."},"tile_officials":false,"tile_notloaded":false,"tile_confirmed":true,"tile_action":false},{"rink":"HORGAN","date":"9/20/2026","day":"Sun","start":"6:30 PM","end":"7:50 PM","assigned":"","home":"Junior Railers U14 NB","away":"RI Saints U14","league":"Independent","notes":"","id":6,"true_league":"Independent","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"N/A","detail":"Independent games aren't expected on the E9 export or the NEGHL site \u2014 confirmed this opponent doesn't appear on either, as expected."},"ref":{"status":"green","label":"2 officials assigned","detail":"Correct date, time, rink, and age label, with a full crew of 2 officials assigned."},"tile_officials":false,"tile_notloaded":false,"tile_confirmed":true,"tile_action":false},{"rink":"GRAY RINK","date":"9/26/2026","day":"Sat","start":"9:30 AM","end":"10:40 AM","assigned":"WH","home":"WWH8A","away":"MLF8Gold","league":"NEGHL","notes":"","id":7,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"green","label":"2 officials assigned","detail":"Correct date, time, rink, and age label, with a full crew of 2 officials assigned."},"tile_officials":false,"tile_notloaded":false,"tile_confirmed":true,"tile_action":false},{"rink":"GRAY RINK","date":"9/27/2026","day":"Sun","start":"2:40 PM","end":"4:00 PM","assigned":"","home":"Junior Railers 13 - Select 1","away":"Jr. Thunderbirds 13 - Elite 2","league":"E9","notes":"moved from 12/26","id":8,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"green","label":"2 officials assigned","detail":"Correct date, time, rink, and age label, with a full crew of 2 officials assigned."},"tile_officials":false,"tile_notloaded":false,"tile_confirmed":true,"tile_action":false},{"rink":"GRAY RINK","date":"9/27/2026","day":"Sun","start":"4:10 PM","end":"5:30 PM","assigned":"WH","home":"WWH8A","away":"AV8RedMa","league":"NEGHL","notes":"","id":9,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"green","label":"2 officials assigned","detail":"Correct date, time, rink, and age label, with a full crew of 2 officials assigned."},"tile_officials":false,"tile_notloaded":false,"tile_confirmed":true,"tile_action":false},{"rink":"GRAY RINK","date":"9/27/2026","day":"Sun","start":"5:40 PM","end":"7:00 PM","assigned":"U19 WH","home":"WWH10Blue","away":"ECW10Major2","league":"NEGHL","notes":"","id":10,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"green","label":"2 officials assigned","detail":"Correct date, time, rink, and age label, with a full crew of 2 officials assigned."},"tile_officials":false,"tile_notloaded":false,"tile_confirmed":true,"tile_action":false},{"rink":"GRAY RINK","date":"10/3/2026","day":"Sat","start":"10:30 AM","end":"11:40 AM","assigned":"E9","home":"Junior Railers 19 - Elite","away":"Junior Railers 18 - Select","league":"E9","notes":"","id":11,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, and time. Junior Railers' 2018/2019-birth-year AAA teams are branded \"Rail Dawgs 2019 [Level]\" on juniorrailers.com instead of \"Junior Railers [Level]\" \u2014 that's the club's own naming for these teams, not a display error. Same team, same game."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/3/2026","day":"Sat","start":"10:40 AM","end":"11:50 AM","assigned":"E9","home":"Junior Railers 13 - Elite","away":"EC Wizards 13 - Elite","league":"E9","notes":"","id":12,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/3/2026","day":"Sat","start":"11:50 AM","end":"1:10 PM","assigned":"E9","home":"Junior Railers U18 - Select","away":"Boston Jr. Rangers U18 - Elite","league":"E9","notes":"","id":13,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/3/2026","day":"Sat","start":"12:00 PM","end":"1:10 PM","assigned":"E9","home":"Junior Railers 14 - Select 2","away":"Winter Club 14 - Select 2","league":"E9","notes":"","id":14,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/3/2026","day":"Sat","start":"1:20 PM","end":"2:30 PM","assigned":"E9","home":"Junior Railers 16 - Select 1","away":"Middlesex Icemen 16 - Elite","league":"E9","notes":"","id":15,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/3/2026","day":"Sat","start":"1:20 PM","end":"2:40 PM","assigned":"E9","home":"Junior Railers 17 - Select 1","away":"Winter Club 17 - Select 1","league":"E9","notes":"","id":16,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/3/2026","day":"Sat","start":"2:40 PM","end":"3:50 PM","assigned":"E9","home":"Junior Railers U14F - Select","away":"Assabet Patriots U14H - Elite","league":"E9","notes":"","id":17,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/3/2026","day":"Sat","start":"2:50 PM","end":"4:10 PM","assigned":"U16 NB","home":"Junior Railers U16 NB","away":"NS Wings U16 Tier 1","league":"Independent","notes":"","id":18,"true_league":"Independent","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"N/A","detail":"Independent games aren't expected on the E9 export or the NEGHL site \u2014 confirmed this opponent doesn't appear on either, as expected."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/4/2026","day":"Sun","start":"2:20 PM","end":"3:30 PM","assigned":"WH","home":"WWH19Black","away":"NG19T2","league":"NEGHL","notes":"","id":19,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/4/2026","day":"Sun","start":"3:40 PM","end":"4:50 PM","assigned":"WH","home":"WWH8A","away":"BJE8N","league":"NEGHL","notes":"","id":20,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/4/2026","day":"Sun","start":"4:00 PM","end":"5:20 PM","assigned":"E9","home":"Junior Railers 19 - Elite","away":"Walpole Express 18 - Elite","league":"E9","notes":"","id":21,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, and time. Junior Railers' 2018/2019-birth-year AAA teams are branded \"Rail Dawgs 2019 [Level]\" on juniorrailers.com instead of \"Junior Railers [Level]\" \u2014 that's the club's own naming for these teams, not a display error. Same team, same game."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/4/2026","day":"Sun","start":"5:00 PM","end":"6:10 PM","assigned":"U19 WH","home":"WWH10Blue","away":"BJE10Gold","league":"NEGHL","notes":"","id":22,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet (fixed)","detail":"Re-checked 9/14: juniorrailers.com now correctly lists \"U10 White Hawks Blue\" as home and \"Boston Jr Eagles 10 Gold\" as away, matching the WIC sheet and NEGHL. Previously flagged as reversed (watch item) \u2014 that\u2019s been fixed since the last check."},"site":{"status":"green","label":"Matches NEGHL site","detail":"Re-checked 9/14: NEGHL GameSheet (game #7655036) confirms Worcester White Hawks 10 Blue home vs. Boston Jr Eagles 10 Gold, 5:00 PM, Fidelity Bank Worcester Ice Center - Gray Rink."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Could not re-verify 9/14 \u2014 horizonwebref.com is currently showing a login wall for this session. Status shown is from the last full check: zero officials assigned, which matched every other October game at the time (normal lag, game is still well outside the 2-week urgent window)."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/4/2026","day":"Sun","start":"6:20 PM","end":"7:30 PM","assigned":"E9","home":"Junior Railers 15 - Select","away":"Junior Railers 15 - Elite","league":"E9","notes":"","id":23,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/10/2026","day":"Sat","start":"10:30 AM","end":"11:40 AM","assigned":"E9","home":"Junior Railers 13 - Select 1","away":"Jr. Thunderbirds 13 - Elite 2","league":"E9","notes":"","id":24,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/10/2026","day":"Sat","start":"10:40 AM","end":"11:50 AM","assigned":"E9","home":"Junior Railers 19 - Select","away":"Americans U8 Girls - Tier 1 (Russo)","league":"E9","notes":"","id":25,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, and time. Junior Railers' 2018/2019-birth-year AAA teams are branded \"Rail Dawgs 2019 [Level]\" on juniorrailers.com instead of \"Junior Railers [Level]\" \u2014 that's the club's own naming for these teams, not a display error. Same team, same game."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/10/2026","day":"Sat","start":"11:50 AM","end":"1:00 PM","assigned":"E9","home":"Junior Railers 15 - Select","away":"Walpole Express 15 - Elite","league":"E9","notes":"","id":26,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/10/2026","day":"Sat","start":"12:00 PM","end":"1:20 PM","assigned":"E9","home":"Junior Railers U16 - Select","away":"NH Avalanche U16 - Select","league":"E9","notes":"","id":27,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/10/2026","day":"Sat","start":"1:10 PM","end":"2:20 PM","assigned":"WH","home":"WWH8A","away":"ECW8N","league":"NEGHL","notes":"","id":28,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/10/2026","day":"Sat","start":"1:30 PM","end":"2:50 PM","assigned":"E9","home":"Junior Railers 18 - Elite","away":"Valley Jr. Warriors 18 - Elite","league":"E9","notes":"","id":29,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, and time. Junior Railers' 2018/2019-birth-year AAA teams are branded \"Rail Dawgs 2018 [Level]\" on juniorrailers.com instead of \"Junior Railers [Level]\" \u2014 that's the club's own naming for these teams, not a display error. Same team, same game."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/10/2026","day":"Sat","start":"2:30 PM","end":"3:50 PM","assigned":"E9","home":"Junior Railers U14F - Elite","away":"RI Saints U14H - Elite","league":"E9","notes":"","id":30,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/10/2026","day":"Sat","start":"3:00 PM","end":"4:20 PM","assigned":"E9","home":"Junior Railers 18 - Select","away":"Walpole Express 18 - Elite","league":"E9","notes":"","id":31,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, and time. Junior Railers' 2018/2019-birth-year AAA teams are branded \"Rail Dawgs 2018 [Level]\" on juniorrailers.com instead of \"Junior Railers [Level]\" \u2014 that's the club's own naming for these teams, not a display error. Same team, same game."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/10/2026","day":"Sat","start":"4:00 PM","end":"5:20 PM","assigned":"E9","home":"Junior Railers 16 - Elite","away":"Assabet Patriots 16 - Elite","league":"E9","notes":"","id":32,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/10/2026","day":"Sat","start":"4:30 PM","end":"5:50 PM","assigned":"E9","home":"Junior Railers 14 - Select 2","away":"Giants - West 14 - Select 2","league":"E9","notes":"","id":33,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/10/2026","day":"Sat","start":"5:30 PM","end":"6:50 PM","assigned":"E9","home":"Junior Railers 16 - Select 2","away":"New England Knights 16 - Elite","league":"E9","notes":"","id":34,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/11/2026","day":"Sun","start":"9:20 AM","end":"10:30 AM","assigned":"WH","home":"WWH19Black","away":"VF19","league":"NEGHL","notes":"","id":35,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/11/2026","day":"Sun","start":"10:30 AM","end":"11:40 AM","assigned":"E9","home":"Junior Railers 16 - Select 2","away":"Winter Club 16 - Select 2","league":"E9","notes":"","id":36,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/11/2026","day":"Sun","start":"10:40 AM","end":"11:50 AM","assigned":"E9","home":"Junior Railers 19 - Elite","away":"Boston Americans 19 - Elite","league":"E9","notes":"","id":37,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, and time. Junior Railers' 2018/2019-birth-year AAA teams are branded \"Rail Dawgs 2019 [Level]\" on juniorrailers.com instead of \"Junior Railers [Level]\" \u2014 that's the club's own naming for these teams, not a display error. Same team, same game."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/11/2026","day":"Sun","start":"11:50 AM","end":"1:00 PM","assigned":"E9","home":"Junior Railers U15 - Select","away":"RI Saints U15 - Elite","league":"E9","notes":"","id":38,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/11/2026","day":"Sun","start":"12:00 PM","end":"1:10 PM","assigned":"E9","home":"Junior Railers 17 - Elite","away":"Winter Club 17 - Elite","league":"E9","notes":"","id":39,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/11/2026","day":"Sun","start":"1:10 PM","end":"2:30 PM","assigned":"E9","home":"Junior Railers 18 - Elite","away":"Junior Falcons 18 - Elite","league":"E9","notes":"","id":40,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, and time. Junior Railers' 2018/2019-birth-year AAA teams are branded \"Rail Dawgs 2018 [Level]\" on juniorrailers.com instead of \"Junior Railers [Level]\" \u2014 that's the club's own naming for these teams, not a display error. Same team, same game."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/11/2026","day":"Sun","start":"1:20 PM","end":"2:30 PM","assigned":"E9","home":"Junior Railers U14F - Elite","away":"Valley Jr. Warriors U14H - Elite","league":"E9","notes":"","id":41,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/11/2026","day":"Sun","start":"2:40 PM","end":"4:00 PM","assigned":"E9","home":"Junior Railers 13 - Select 1","away":"Jr. Thunderbirds 13 - Select","league":"E9","notes":"","id":42,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/11/2026","day":"Sun","start":"2:40 PM","end":"3:50 PM","assigned":"E9","home":"Junior Railers 14 - Select 2","away":"Jr. Thunderbirds 14 - Select","league":"E9","notes":"","id":43,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/11/2026","day":"Sun","start":"4:00 PM","end":"5:20 PM","assigned":"WH","home":"WWH8A","away":"BSB8Green","league":"NEGHL","notes":"","id":44,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/11/2026","day":"Sun","start":"5:30 PM","end":"6:50 PM","assigned":"U19 WH","home":"WWH10Blue","away":"MLF10GoldT1","league":"NEGHL","notes":"","id":45,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/17/2026","day":"Sat","start":"10:40 AM","end":"11:50 AM","assigned":"E9","home":"Junior Railers 15 - Elite","away":"EC Wizards 15 - Select","league":"E9","notes":"","id":46,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/17/2026","day":"Sat","start":"11:50 AM","end":"1:00 PM","assigned":"E9","home":"Junior Railers U18 - Select","away":"Valley Jr. Warriors U18 - Showcase","league":"E9","notes":"","id":47,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/17/2026","day":"Sat","start":"12:00 PM","end":"1:10 PM","assigned":"E9","home":"Junior Railers U15 - Select","away":"NH Avalanche U15 - Elite 2","league":"E9","notes":"","id":48,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/17/2026","day":"Sat","start":"1:10 PM","end":"2:20 PM","assigned":"U14 NB","home":"Junior Railers U14F - Elite","away":"Troy Albany Titans","league":"Independent","notes":"Dale added teams here","id":49,"true_league":"Independent","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"N/A","detail":"Independent games aren't expected on the E9 export or the NEGHL site \u2014 confirmed this opponent doesn't appear on either, as expected."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/17/2026","day":"Sat","start":"1:20 PM","end":"2:30 PM","assigned":"","home":"U10 White Hawks White","away":"Casco Bay Mariners 10 Minor White","league":"NEGHL","notes":"double-header to address TBA","id":50,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/17/2026","day":"Sat","start":"2:30 PM","end":"3:50 PM","assigned":"E9","home":"Junior Railers 18 - Select","away":"Boston Americans 19 - Elite","league":"E9","notes":"","id":51,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, and time. Junior Railers' 2018/2019-birth-year AAA teams are branded \"Rail Dawgs 2018 [Level]\" on juniorrailers.com instead of \"Junior Railers [Level]\" \u2014 that's the club's own naming for these teams, not a display error. Same team, same game."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/17/2026","day":"Sat","start":"2:40 PM","end":"4:00 PM","assigned":"E9","home":"Junior Railers 19 - Elite","away":"Boston Advantage 19 - Elite","league":"E9","notes":"","id":52,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, and time. Junior Railers' 2018/2019-birth-year AAA teams are branded \"Rail Dawgs 2019 [Level]\" on juniorrailers.com instead of \"Junior Railers [Level]\" \u2014 that's the club's own naming for these teams, not a display error. Same team, same game."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/17/2026","day":"Sat","start":"4:00 PM","end":"5:20 PM","assigned":"U14 NB","home":"Junior Railers U14F - Elite","away":"Troy Albany Titans","league":"Independent","notes":"Dale added teams here","id":53,"true_league":"Independent","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"N/A","detail":"Independent games aren't expected on the E9 export or the NEGHL site \u2014 confirmed this opponent doesn't appear on either, as expected."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/17/2026","day":"Sat","start":"4:10 PM","end":"5:30 PM","assigned":"E9","home":"Junior Railers 15 - Select","away":"New England Knights 15 - Elite","league":"E9","notes":"","id":54,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/17/2026","day":"Sat","start":"5:30 PM","end":"6:50 PM","assigned":"","home":"U10 White Hawks White","away":"Casco Bay Mariners 10 Minor White","league":"NEGHL","notes":"double-header to address TBA","id":55,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/17/2026","day":"Sat","start":"5:40 PM","end":"7:00 PM","assigned":"E9","home":"Junior Railers 17 - Select 1","away":"Assabet Patriots 17 - Select","league":"E9","notes":"","id":56,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/18/2026","day":"Sun","start":"9:20 AM","end":"10:30 AM","assigned":"E9","home":"Junior Railers 15 - Select","away":"NH Avalanche 15 - Elite","league":"E9","notes":"","id":57,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/18/2026","day":"Sun","start":"10:30 AM","end":"11:40 AM","assigned":"E9","home":"Junior Railers 17 - Elite","away":"Boston Jr. Rangers 17 - Elite","league":"E9","notes":"","id":58,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/18/2026","day":"Sun","start":"10:40 AM","end":"11:50 AM","assigned":"E9","home":"Junior Railers U14F - Select","away":"Boston Jr. Bruins U14F - Elite","league":"E9","notes":"","id":59,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/18/2026","day":"Sun","start":"11:50 AM","end":"1:00 PM","assigned":"E9","home":"Junior Railers U18 - Select","away":"Assabet Patriots U18 - Elite 2","league":"E9","notes":"","id":60,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/18/2026","day":"Sun","start":"12:00 PM","end":"1:10 PM","assigned":"E9","home":"Junior Railers 19 - Select","away":"EC Wizards 18 - Select","league":"E9","notes":"","id":61,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, and time. Junior Railers' 2018/2019-birth-year AAA teams are branded \"Rail Dawgs 2019 [Level]\" on juniorrailers.com instead of \"Junior Railers [Level]\" \u2014 that's the club's own naming for these teams, not a display error. Same team, same game."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/18/2026","day":"Sun","start":"1:10 PM","end":"2:30 PM","assigned":"E9","home":"Junior Railers U14F - Elite","away":"EC Wizards U14H - Elite","league":"E9","notes":"","id":62,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/18/2026","day":"Sun","start":"1:20 PM","end":"2:30 PM","assigned":"E9","home":"Junior Railers 18 - Elite","away":"Junior Falcons 18 - Elite","league":"E9","notes":"","id":63,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, and time. Junior Railers' 2018/2019-birth-year AAA teams are branded \"Rail Dawgs 2018 [Level]\" on juniorrailers.com instead of \"Junior Railers [Level]\" \u2014 that's the club's own naming for these teams, not a display error. Same team, same game."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/18/2026","day":"Sun","start":"2:40 PM","end":"4:00 PM","assigned":"E9","home":"Junior Railers 14 - Select 2","away":"RI Saints 14 - Elite","league":"E9","notes":"","id":64,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/18/2026","day":"Sun","start":"2:40 PM","end":"3:50 PM","assigned":"E9","home":"Junior Railers 15 - Elite","away":"New England Knights 15 - Elite","league":"E9","notes":"","id":65,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/18/2026","day":"Sun","start":"4:00 PM","end":"5:20 PM","assigned":"E9","home":"Junior Railers 16 - Select 1","away":"Winter Club 16 - Elite","league":"E9","notes":"","id":66,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/18/2026","day":"Sun","start":"4:10 PM","end":"5:30 PM","assigned":"WH","home":"WWH19Black","away":"NSV19White","league":"NEGHL","notes":"","id":67,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/18/2026","day":"Sun","start":"5:40 PM","end":"7:00 PM","assigned":"WH","home":"WWH8A","away":"RIS8","league":"NEGHL","notes":"","id":68,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/24/2026","day":"Sat","start":"10:30 AM","end":"11:40 AM","assigned":"E9","home":"Junior Railers 16 - Select 2","away":"EC Wizards 16 - Select","league":"E9","notes":"","id":69,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/24/2026","day":"Sat","start":"10:40 AM","end":"11:50 AM","assigned":"E9","home":"Junior Railers 15 - Elite","away":"Walpole Express 15 - Elite","league":"E9","notes":"","id":70,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/24/2026","day":"Sat","start":"11:50 AM","end":"1:00 PM","assigned":"E9","home":"Junior Railers 14 - Select 2","away":"Giants - West 14 - Select 3","league":"E9","notes":"","id":71,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/24/2026","day":"Sat","start":"12:00 PM","end":"1:10 PM","assigned":"E9","home":"Junior Railers U16 - Select","away":"Winter Club U16 - Select","league":"E9","notes":"","id":72,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/24/2026","day":"Sat","start":"1:10 PM","end":"2:20 PM","assigned":"E9","home":"Junior Railers 13 - Elite","away":"Assabet Patriots 13 - Elite","league":"E9","notes":"moved from 4:00pm, confirmed by league","id":73,"true_league":"E9","jr":{"status":"red","label":"Shows old pre-swap time","detail":"This game (13-Elite vs. Assabet Patriots) moved here from 4:00 PM, confirmed by the league. juniorrailers.com still lists it at the old 4:00 PM slot. This is E9-sourced data \u2014 suggest running /e9-team-import-sync for Junior Railers 13-Elite to push the corrected time through."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"red","label":"Wrong age label (12U)","detail":"Date/time/rink are correct on the ref portal, but the age/division label shows \"12U\" \u2014 should be \"13U\" for this team. (Likely didn't get updated when this game's time slot changed.)"},"tile_officials":false,"tile_notloaded":false,"tile_confirmed":false,"tile_action":true},{"rink":"BLUE RINK","date":"10/24/2026","day":"Sat","start":"1:20 PM","end":"2:30 PM","assigned":"E9","home":"Junior Railers U14F - Elite","away":"Boston Advantage U14F - Elite 1","league":"E9","notes":"","id":74,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/24/2026","day":"Sat","start":"2:30 PM","end":"3:50 PM","assigned":"E9","home":"Junior Railers 16 - Select 1","away":"Middlesex Icemen 16 - Elite","league":"E9","notes":"","id":75,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/24/2026","day":"Sat","start":"2:40 PM","end":"4:00 PM","assigned":"E9","home":"Junior Railers 17 - Select 1","away":"Walpole Express 17 - Elite","league":"E9","notes":"","id":76,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/24/2026","day":"Sat","start":"4:00 PM","end":"5:20 PM","assigned":"E9","home":"Junior Railers 14 - Select 1","away":"New England Knights 14 - Elite","league":"E9","notes":"moved from 1:10pm, confirmed by league","id":77,"true_league":"E9","jr":{"status":"red","label":"Shows old pre-swap time","detail":"This game (14-Select 1 vs. New England Knights) moved here from 1:10 PM, confirmed by the league. juniorrailers.com still lists it at the old 1:10 PM slot. This is E9-sourced data \u2014 suggest running /e9-team-import-sync for Junior Railers 14-Select 1 to push the corrected time through."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"red","label":"Wrong age label (13U)","detail":"Date/time/rink are correct on the ref portal, but the age/division label shows \"13U\" \u2014 should be \"12U\" for this team. (Likely didn't get updated when this game's time slot changed.)"},"tile_officials":false,"tile_notloaded":false,"tile_confirmed":false,"tile_action":true},{"rink":"BLUE RINK","date":"10/24/2026","day":"Sat","start":"4:10 PM","end":"5:30 PM","assigned":"E9","home":"Junior Railers 13 - Select 2","away":"Boston Advantage 13 - Select 1","league":"E9","notes":"","id":78,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/24/2026","day":"Sat","start":"5:30 PM","end":"6:50 PM","assigned":"U16 NB","home":"Junior Railers U16 NB","away":"Boston Advantage U16 Prep","league":"Independent","notes":"","id":79,"true_league":"Independent","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"N/A","detail":"Independent games aren't expected on the E9 export or the NEGHL site \u2014 confirmed this opponent doesn't appear on either, as expected."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/24/2026","day":"Sat","start":"5:40 PM","end":"7:00 PM","assigned":"E9","home":"Junior Railers 13 - Select 1","away":"Middlesex Icemen 13 - Select","league":"E9","notes":"","id":80,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/25/2026","day":"Sun","start":"9:20 AM","end":"10:30 AM","assigned":"E9","home":"Junior Railers 17 - Elite","away":"Junior Falcons 17 - Elite","league":"E9","notes":"moved from 1:10pm Blue, confirmed by league","id":81,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/25/2026","day":"Sun","start":"10:30 AM","end":"11:40 AM","assigned":"E9","home":"White Hawks U10 Blue","away":"Casco Bay Mariners 10 Major Black","league":"","notes":"double header scheduled from TBA, confirmed by league","id":82,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/25/2026","day":"Sun","start":"10:40 AM","end":"11:50 AM","assigned":"E9","home":"Junior Railers 14 - Select 1","away":"Middlesex Icemen 14 - Elite","league":"E9","notes":"moved from 10:30am Gray, confirmed by league","id":83,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/25/2026","day":"Sun","start":"11:50 AM","end":"1:00 PM","assigned":"E9","home":"Junior Railers U16 - Select","away":"EC Wizards U16 - Elite","league":"E9","notes":"","id":84,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/25/2026","day":"Sun","start":"12:00 PM","end":"1:10 PM","assigned":"E9","home":"Junior Railers 15 - Elite","away":"NH Avalanche 15 - Elite","league":"E9","notes":"","id":85,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/25/2026","day":"Sun","start":"1:10 PM","end":"2:30 PM","assigned":"E9","home":"Junior Railers 13 - Select 2","away":"Jr. Thunderbirds 13 - Select","league":"E9","notes":"moved from 9:20pm Gray, confirmed by league","id":86,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/25/2026","day":"Sun","start":"1:20 PM","end":"2:30 PM","assigned":"E9","home":"Junior Railers 14 - Select 2","away":"New England Knights 14 - Select","league":"E9","notes":"","id":87,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/25/2026","day":"Sun","start":"2:40 PM","end":"4:00 PM","assigned":"E9","home":"Junior Railers 16 - Select 1","away":"Boston Jr. Bruins 16 - Elite","league":"E9","notes":"","id":88,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/25/2026","day":"Sun","start":"2:40 PM","end":"3:50 PM","assigned":"WH","home":"White Hawks U10 Blue","away":"Casco Bay Mariners 10 Major Black","league":"NEGHL","notes":"double header scheduled from TBA","id":89,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/25/2026","day":"Sun","start":"4:00 PM","end":"5:20 PM","assigned":"E9","home":"Junior Railers 16 - Select 2","away":"New England Knights 16 - Elite","league":"E9","notes":"","id":90,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/25/2026","day":"Sun","start":"4:10 PM","end":"5:30 PM","assigned":"E9","home":"Junior Railers 15 - Select","away":"EC Wizards 15 - Select","league":"E9","notes":"moved from 10:40am Gray, confirmed by league","id":91,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"10/25/2026","day":"Sun","start":"5:30 PM","end":"6:50 PM","assigned":"","home":"WWH19Black","away":"NEW19Red","league":"NEGHL","notes":"moved from 2:40pm Gray","id":92,"true_league":"NEGHL","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches NEGHL site","detail":"This home game appears on the NEGHL GameSheet schedule with matching date, time, and team names."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"10/25/2026","day":"Sun","start":"5:40 PM","end":"7:00 PM","assigned":"Skills","home":"Junior Railers 16 - Select 2","away":"Jr. Thunderbirds 16 - Select","league":"E9","notes":"moved from 11/21, confirmed by league","id":93,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"red","label":"Missing from ref portal","detail":"No row exists on the ref portal for this game at any time, old or new. This is a confirmed, league-confirmed game \u2014 needs to be added and staffed."},"tile_officials":false,"tile_notloaded":false,"tile_confirmed":false,"tile_action":true},{"rink":"GRAY RINK","date":"10/31/2026","day":"Sat","start":"9:30 AM","end":"10:40 AM","assigned":"U14 NB","home":"Junior Railers U14F - Elite","away":"Yale Jr Bulldogs","league":"","notes":"Dale added teams here","id":94,"true_league":"Independent","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"N/A","detail":"Independent games aren't expected on the E9 export or the NEGHL site \u2014 confirmed this opponent doesn't appear on either, as expected."},"ref":{"status":"yellow","label":"No officials assigned","detail":"Correct date/time/rink/age label, but zero officials are currently assigned. This matches every other October game so far \u2014 looks like normal lag rather than a one-off miss."},"tile_officials":true,"tile_notloaded":false,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"11/1/2026","day":"Sun","start":"1:30 PM","end":"2:50 PM","assigned":"E9","home":"Junior Railers U16 - Select","away":"Valley Jr. Warriors U16 - Showcase","league":"E9","notes":"","id":95,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"11/1/2026","day":"Sun","start":"2:00 PM","end":"3:20 PM","assigned":"E9","home":"Junior Railers 14 - Select 1","away":"VT Jr. Catamounts 14 - Select","league":"E9","notes":"","id":96,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"11/1/2026","day":"Sun","start":"3:00 PM","end":"4:20 PM","assigned":"E9","home":"Junior Railers U14F - Select","away":"Junior Falcons 12 - Elite","league":"E9","notes":"moved from 3:30pm Blue, confirmed by league","id":97,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"11/1/2026","day":"Sun","start":"3:30 PM","end":"4:50 PM","assigned":"E9","home":"Junior Railers U15 - Select","away":"Boston Jr. Bruins U15 - Elite","league":"E9","notes":"moved from 3:00pm Gray, confirmed by league","id":98,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"11/1/2026","day":"Sun","start":"4:30 PM","end":"5:50 PM","assigned":"E9","home":"Junior Railers 14 - Select 1","away":"VT Jr. Catamounts 14 - Select","league":"E9","notes":"","id":99,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"11/1/2026","day":"Sun","start":"5:00 PM","end":"6:20 PM","assigned":"E9","home":"Junior Railers 18 - Select","away":"Boston Americans 19 - Elite","league":"E9","notes":"","id":100,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, and time. Junior Railers' 2018/2019-birth-year AAA teams are branded \"Rail Dawgs 2018 [Level]\" on juniorrailers.com instead of \"Junior Railers [Level]\" \u2014 that's the club's own naming for these teams, not a display error. Same team, same game."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"11/1/2026","day":"Sun","start":"6:00 PM","end":"7:20 PM","assigned":"E9","home":"Junior Railers 16 - Elite","away":"NH Avalanche 16 - Elite 1","league":"E9","notes":"","id":101,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"11/7/2026","day":"Sat","start":"10:30 AM","end":"11:50 AM","assigned":"E9","home":"Junior Railers 16 - Select 2","away":"Jr. Thunderbirds 16 - Select","league":"E9","notes":"","id":102,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"11/7/2026","day":"Sat","start":"11:50 AM","end":"1:00 PM","assigned":"E9","home":"Junior Railers U16 - Select","away":"RI Saints U16 - Elite","league":"E9","notes":"","id":103,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"11/7/2026","day":"Sat","start":"12:00 PM","end":"1:20 PM","assigned":"E9","home":"Junior Railers U18 - Select","away":"Boston Jr. Rangers U18 - Elite","league":"E9","notes":"","id":104,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"11/7/2026","day":"Sat","start":"1:10 PM","end":"2:20 PM","assigned":"E9","home":"Junior Railers 16 - Elite","away":"Valley Jr. Warriors 16 - Elite","league":"E9","notes":"","id":105,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"11/7/2026","day":"Sat","start":"1:30 PM","end":"2:50 PM","assigned":"E9","home":"Junior Railers U14F - Elite","away":"VT Jr. Catamounts U14H - Elite","league":"E9","notes":"","id":106,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"11/7/2026","day":"Sat","start":"2:30 PM","end":"3:40 PM","assigned":"E9","home":"Junior Railers 18 - Elite","away":"Winter Club 18 - Elite","league":"E9","notes":"","id":107,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, and time. Junior Railers' 2018/2019-birth-year AAA teams are branded \"Rail Dawgs 2018 [Level]\" on juniorrailers.com instead of \"Junior Railers [Level]\" \u2014 that's the club's own naming for these teams, not a display error. Same team, same game."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"11/7/2026","day":"Sat","start":"3:00 PM","end":"4:20 PM","assigned":"E9","home":"Junior Railers 13 - Select 2","away":"NH Avalanche 13 - Select","league":"E9","notes":"","id":108,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"11/7/2026","day":"Sat","start":"3:50 PM","end":"5:10 PM","assigned":"E9","home":"Junior Railers U14F - Elite","away":"VT Jr. Catamounts U14H - Elite","league":"E9","notes":"","id":109,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"11/8/2026","day":"Sun","start":"9:20 AM","end":"10:40 AM","assigned":"E9","home":"Junior Railers 13 - Select 1","away":"Walpole Express 13 - Select","league":"E9","notes":"","id":110,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"11/8/2026","day":"Sun","start":"12:50 PM","end":"2:10 PM","assigned":"E9","home":"Junior Railers U15 - Select","away":"NH Avalanche U15 - Elite 1","league":"E9","notes":"","id":111,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"11/8/2026","day":"Sun","start":"1:10 PM","end":"2:30 PM","assigned":"E9","home":"Junior Railers U18 - Select","away":"Assabet Patriots U18 - Elite 1","league":"E9","notes":"","id":112,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"BLUE RINK","date":"11/8/2026","day":"Sun","start":"2:20 PM","end":"3:40 PM","assigned":"E9","home":"Junior Railers 14 - Select 1","away":"Walpole Express 14 - Select","league":"E9","notes":"","id":113,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"11/8/2026","day":"Sun","start":"2:40 PM","end":"4:00 PM","assigned":"E9","home":"Junior Railers 15 - Elite","away":"Junior Railers 15 - Select","league":"E9","notes":"","id":114,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false},{"rink":"GRAY RINK","date":"11/8/2026","day":"Sun","start":"4:10 PM","end":"5:30 PM","assigned":"E9","home":"Junior Railers 16 - Select 1","away":"Boston Jr. Rangers 16 - Elite","league":"E9","notes":"","id":115,"true_league":"E9","jr":{"status":"green","label":"Matches WIC sheet","detail":"Correct home/away, date, time, and team names on juniorrailers.com."},"site":{"status":"green","label":"Matches E9 export","detail":"This home game appears in the VAHockey \"All Games\" export with matching date, time, and team names."},"ref":{"status":"yellow","label":"Not loaded yet","detail":"The ref portal only has games loaded through 10/31/2026 so far (Bob typically loads about a month at a time) \u2014 this game is beyond that, so there's nothing to check yet. Not a discrepancy."},"tile_officials":false,"tile_notloaded":true,"tile_confirmed":false,"tile_action":false}];
+const NOT_ON_SHEET = [{"source":"juniorrailers.com","date":"Sep 18, 2026","time":"8:15 AM \u2013 4:30 PM (6 games)","matchup":"Preseason tournament at WIC \u2014 2017 AAA Elite, 2016 AAA Elite, 2015 AAA Select vs. Northstars, P.A.L. Blue Knights, Nor'Easter, Jr Falcons, Long Island Royals, and others","note":"A full day of AAA games at \u201cFidelity Bank Worcester Ice Center\u201d on a Friday \u2014 none of it is on the WIC Weekend Sheet (which only tracks weekend contract slots, so a Friday tournament is outside its scope by design) or in the E9 \u201cAll Games\u201d export (0 games that date). Opponents like Long Island Royals and P.A.L. Blue Knights suggest a preseason tournament rather than a regular E9 league date. Real ice usage at WIC that isn't covered by the normal 3-source tracking \u2014 worth confirming the ice reservation and officials for this day are handled through whatever process covers this tournament (separate from the weekend contract and from Bob's ref-portal loading)."},{"source":"juniorrailers.com","date":"Nov 7, 2026","time":"TBD (no time listed)","matchup":"East Coast Wizards 10 Major 2 vs. U10 White Hawks Blue","note":"Appears on juniorrailers.com's Nov 7 page with no time set. No corresponding row on the WIC Weekend Sheet, and no matching game found on the NEGHL schedule for this window. Could be a stale placeholder, or a game scheduled outside the checked window \u2014 worth a manual look before assuming it's wrong."}];
+
+const STEPS = [
+  {
+    id: "bob-emails",
+    title: "Decide on the three draft emails to Bob Sachse",
+    body: "October is already loaded into the ref portal on his usual cadence, so none of these reach him without a nudge from you.",
+    drafts: [
+      { subj: "Two Junior Railers games missing from the ref schedule",
+        body: "Bob — two confirmed games aren't on the ref portal at all, at either their old or new time:\n· Sun 9/20, 4:10 PM, Gray Rink: Junior Railers 16-Select 1 vs. Boston Jr. Bruins 16-Elite (moved from 1:20 PM Blue, confirmed by league)\n· Sun 10/25, 5:40 PM, Blue Rink: Junior Railers 16-Select 2 vs. Jr. Thunderbirds 16-Select (moved in from 11/21, confirmed by league)\nCan you add both and get refs assigned?" },
+      { subj: "Two Oct 24 games have swapped age labels",
+        body: "Bob — the two Oct 24 Gray Rink games that swapped times (confirmed by the league) look right time-wise on the portal, but the age labels stayed put instead of following the games:\n· 1:10 PM is now Junior Railers 13-Elite vs. Assabet Patriots (should show \"13U\") but still shows \"12U\"\n· 4:00 PM is now Junior Railers 14-Select 1 vs. New England Knights (should show \"12U\") but still shows \"13U\"\nCan you swap those two labels?" },
+      { subj: "October ref assignments still all open",
+        body: "Bob — just flagging that as of today, every game loaded for October (83 games) still shows no officials assigned, versus September which is fully covered. Wanted to make sure this is just timing on your end and not something that fell through the cracks, especially for the games coming up in the next couple weeks." }
+    ]
+  },
+  {
+    id: "e9-sync-oct24",
+    title: "Run /e9-team-import-sync for the two Oct 24 teams",
+    body: "Both stale-time games are E9-sourced (Junior Railers 13-Elite and Junior Railers 14-Select 1) — the WIC sheet and E9 export already have the corrected 1:10 PM / 4:00 PM times, juniorrailers.com just hasn't picked them up. Running the sync for just those two teams should push the fix through without a manual site edit."
+  },
+  {
+    id: "sept18-tournament",
+    title: "Look into the Sept 18 tournament at WIC",
+    body: "A full day of AAA games at Fidelity Bank Worcester Ice Center that's on juniorrailers.com but not on the WIC Weekend Sheet or in the E9 export — likely a preseason tournament outside both systems' normal scope. Worth confirming ice reservation and officials are handled some other way. See \"Not on the WIC Sheet\" above."
+  },
+  {
+    id: "wic-league-cleanup",
+    title: "Optional: clean up two blank/wrong WIC sheet LEAGUE cells",
+    body: "Oct 31 Yale Jr Bulldogs row (blank → should read \"Independent\") and Oct 25 10:30 AM White Hawks/Casco Bay row (blank, \"Assigned\" also wrong → should read \"NEGHL\")."
+  }
+];
+
+// ---------- stat tiles (clickable filters) ----------
+// Each tile's `test` runs against a game to decide whether that game belongs to it.
+// 'all' is the reset tile. Every other tile both counts AND filters the same way,
+// so the number on the card is always exactly what clicking it shows.
+const TILES = [
+  { key: 'all', l: 'Games tracked', s: 'WIC Weekend Sheet, this window', cls: '',
+    test: () => true },
+  { key: 'confirmed', l: 'Fully confirmed', s: 'green on all three sources', cls: 'good',
+    test: g => g.tile_confirmed },
+  { key: 'action', l: 'Need action', s: 'at least one confirmed error', cls: 'bad',
+    test: g => g.tile_action },
+  { key: 'officials', l: 'Officials outstanding', s: '0 or 1 assigned, ref portal', cls: 'warn',
+    test: g => g.tile_officials },
+  { key: 'notloaded', l: 'Not loaded on ref portal', s: 'Nov 1–9, not yet due', cls: '',
+    test: g => g.tile_notloaded },
+];
+let activeTile = 'all';
+
+function renderStats(){
+  const counts = Object.fromEntries(TILES.map(t => [t.key, GAMES.filter(t.test).length]));
+  document.getElementById('stats').innerHTML = TILES.map(t => `
+    <button class="stat clickable" data-tile="${t.key}" aria-pressed="${activeTile===t.key}">
+      <div class="n ${t.cls}">${counts[t.key]}</div>
+      <div class="l">${t.l}</div>
+      <div class="s">${t.s}</div>
+    </button>`).join('');
+  document.querySelectorAll('.stat.clickable').forEach(el => {
+    el.addEventListener('click', () => {
+      activeTile = (activeTile === el.dataset.tile) ? 'all' : el.dataset.tile;
+      document.querySelectorAll('.stat.clickable').forEach(s => s.classList.toggle('active', s.dataset.tile===activeTile && activeTile!=='all'));
+      updateTileNote();
+      applyFilters();
+    });
+  });
+}
+function updateTileNote(){
+  const note = document.getElementById('tile-filter-note');
+  if(activeTile === 'all'){ note.hidden = true; return; }
+  const t = TILES.find(t => t.key===activeTile);
+  note.hidden = false;
+  note.textContent = `Filtering: ${t.l}`;
+}
+document.getElementById('tile-filter-note').addEventListener('click', () => {
+  activeTile = 'all';
+  document.querySelectorAll('.stat.clickable').forEach(s => s.classList.remove('active'));
+  updateTileNote();
+  applyFilters();
+});
+
+// ---------- pill + tooltip ----------
+const tooltipEl = document.getElementById('tooltip');
+function showTooltip(target, label, detail){
+  tooltipEl.innerHTML = `<span class="tt-label">${label}</span>${detail}`;
+  tooltipEl.classList.add('show');
+  const r = target.getBoundingClientRect();
+  const tw = 300;
+  let left = r.left + r.width/2 - tw/2;
+  left = Math.max(10, Math.min(left, window.innerWidth - tw - 10));
+  let top = r.top - 10;
+  tooltipEl.style.left = left + 'px';
+  // measure after content set
+  requestAnimationFrame(() => {
+    const th = tooltipEl.offsetHeight;
+    let finalTop = r.top - th - 10;
+    if (finalTop < 8) finalTop = r.bottom + 10;
+    tooltipEl.style.top = finalTop + 'px';
+  });
+}
+function hideTooltip(){ tooltipEl.classList.remove('show'); }
+
+const STATUS_CLASS = { green: 'good', yellow: 'warn', red: 'bad' };
+function pillHTML(col){
+  return `<span class="pill ${STATUS_CLASS[col.status]}" tabindex="0" data-label="${escapeAttr(col.label)}" data-detail="${escapeAttr(col.detail)}">
+    <span class="dot"></span>${col.label}</span>`;
+}
+function escapeAttr(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+// ---------- table rendering ----------
+const tbody = document.getElementById('board-body');
+function tileKeysFor(g){
+  return TILES.filter(t => t.key!=='all' && t.test(g)).map(t => t.key).join(' ');
+}
+function rowHTML(g){
+  return `<tr data-league="${g.true_league}" data-tiles="${tileKeysFor(g)}" data-id="${g.id}"
+      data-search="${escapeAttr((g.home+' '+g.away+' '+g.rink+' '+g.true_league).toLowerCase())}">
+    <td class="td-check"><input type="checkbox" class="row-check" data-id="${g.id}" aria-label="Select this game to re-check"></td>
+    <td class="dt"><span class="d">${g.date.replace('/2026','')}</span><span class="r">${g.start}</span></td>
+    <td class="dt">${g.rink.replace(' RINK','')}</td>
+    <td><span class="league-badge ${g.true_league}">${g.true_league}</span></td>
+    <td class="matchup"><span class="home">${g.home}</span><span class="vs">vs</span><span class="away">${g.away}</span></td>
+    <td>${pillHTML(g.jr)}</td>
+    <td>${pillHTML(g.site)}</td>
+    <td>${pillHTML(g.ref)}</td>
+  </tr>`;
+}
+tbody.innerHTML = GAMES.map(rowHTML).join('');
+
+// ---------- row selection + re-check request ----------
+const GAMES_BY_ID = Object.fromEntries(GAMES.map(g => [g.id, g]));
+const selected = new Set();
+const recheckBar = document.getElementById('recheck-bar');
+const recheckFallback = document.getElementById('recheck-fallback');
+
+function updateRecheckBar(){
+  const n = selected.size;
+  recheckBar.hidden = n === 0;
+  if (n === 0){ recheckFallback.hidden = true; return; }
+  document.getElementById('recheck-count').textContent = `${n} selected`;
+}
+function toggleRowSelected(id, on){
+  const tr = tbody.querySelector(`tr[data-id="${id}"]`);
+  if (on) selected.add(id); else selected.delete(id);
+  if (tr) tr.classList.toggle('is-selected', on);
+  updateRecheckBar();
+}
+tbody.addEventListener('change', e => {
+  const cb = e.target.closest('.row-check');
+  if (!cb) return;
+  toggleRowSelected(Number(cb.dataset.id), cb.checked);
+});
+document.getElementById('select-all').addEventListener('change', e => {
+  const on = e.target.checked;
+  tbody.querySelectorAll('tr:not(.is-hidden) .row-check').forEach(cb => {
+    cb.checked = on;
+    toggleRowSelected(Number(cb.dataset.id), on);
+  });
+});
+document.getElementById('recheck-clear').addEventListener('click', () => {
+  tbody.querySelectorAll('.row-check').forEach(cb => cb.checked = false);
+  document.getElementById('select-all').checked = false;
+  [...selected].forEach(id => toggleRowSelected(id, false));
+});
+// Shared clipboard helper: tries the real clipboard, falls back to a visible
+// textarea (with `onFallback`) when the sandbox blocks it — never fails silently.
+async function copyText(text, { onSuccess, onFallback } = {}){
+  try{
+    if (navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+      onSuccess && onSuccess();
+      return true;
+    }
+  }catch(e){ /* fall through to fallback */ }
+  onFallback && onFallback(text);
+  return false;
+}
+function flashCopied(btn, copiedLabel){
+  const orig = btn.dataset.origLabel || btn.innerHTML;
+  btn.dataset.origLabel = orig;
+  btn.innerHTML = copiedLabel;
+  btn.classList.add('copied');
+  clearTimeout(btn._copyTimer);
+  btn._copyTimer = setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 1800);
+}
+
+document.getElementById('recheck-copy').addEventListener('click', async () => {
+  const games = [...selected].sort((a,b)=>a-b).map(id => GAMES_BY_ID[id]);
+  const lines = games.map(g =>
+    `- ${g.date} ${g.start}, ${g.rink} — ${g.home} vs. ${g.away} (${g.true_league})`
+  );
+  const text = `Please re-run the schedule check for just these ${games.length} game(s) from the Schedule Status board and update the board:\n${lines.join('\n')}`;
+  const btn = document.getElementById('recheck-copy');
+  await copyText(text, {
+    onSuccess: () => { recheckFallback.hidden = true; flashCopied(btn, 'Copied ✓'); },
+    onFallback: (t) => { recheckFallback.value = t; recheckFallback.hidden = false; recheckFallback.select(); }
+  });
+});
+
+document.getElementById('steps-container').addEventListener('click', async e => {
+  const btn = e.target.closest('.copy-draft-btn');
+  if (!btn) return;
+  const step = STEPS.find(s => s.id === btn.dataset.id);
+  const d = step.drafts[Number(btn.dataset.draft)];
+  const text = `Subject: ${d.subj}\n\n${d.body}`;
+  await copyText(text, {
+    onSuccess: () => flashCopied(btn, `${COPY_ICON}Copied ✓`),
+    onFallback: (t) => {
+      recheckFallback.value = t;
+      recheckFallback.hidden = false;
+      recheckFallback.scrollIntoView({ behavior:'smooth', block:'center' });
+      recheckFallback.select();
+    }
+  });
+});
+
+tbody.addEventListener('mouseover', e => {
+  const p = e.target.closest('.pill');
+  if(p) showTooltip(p, p.dataset.label, p.dataset.detail);
+});
+tbody.addEventListener('mouseout', e => {
+  if(e.target.closest('.pill')) hideTooltip();
+});
+tbody.addEventListener('focusin', e => {
+  const p = e.target.closest('.pill');
+  if(p) showTooltip(p, p.dataset.label, p.dataset.detail);
+});
+tbody.addEventListener('focusout', e => {
+  if(e.target.closest('.pill')) hideTooltip();
+});
+window.addEventListener('scroll', hideTooltip, true);
+
+// ---------- filters ----------
+const leagueCounts = GAMES.reduce((a,g)=>{a[g.true_league]=(a[g.true_league]||0)+1; return a;}, {});
+const leagues = ['All', ...Object.keys(leagueCounts).sort()];
+let activeLeague = 'All';
+document.getElementById('league-chips').innerHTML = leagues.map(l =>
+  `<button class="chip" data-league="${l}" aria-pressed="${l==='All'}">${l}${l==='All' ? '' : ' · '+leagueCounts[l]}</button>`
+).join('');
+
+function applyFilters(){
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  let shown = 0;
+  tbody.querySelectorAll('tr').forEach(tr => {
+    const matchesLeague = activeLeague==='All' || tr.dataset.league===activeLeague;
+    const matchesSearch = !q || tr.dataset.search.indexOf(q) > -1;
+    const matchesTile = activeTile==='all' || tr.dataset.tiles.split(' ').includes(activeTile);
+    const visible = matchesLeague && matchesSearch && matchesTile;
+    tr.classList.toggle('is-hidden', !visible);
+    if(visible) shown++;
+  });
+  document.getElementById('row-count').textContent = `Showing ${shown} of ${GAMES.length} games`;
+}
+document.getElementById('search').addEventListener('input', applyFilters);
+document.getElementById('league-chips').addEventListener('click', e => {
+  const btn = e.target.closest('.chip');
+  if(!btn) return;
+  activeLeague = btn.dataset.league;
+  document.querySelectorAll('#league-chips .chip').forEach(c => c.setAttribute('aria-pressed', c===btn));
+  applyFilters();
+});
+
+// ---------- not-on-sheet ----------
+document.getElementById('not-on-sheet').innerHTML = NOT_ON_SHEET.length ? NOT_ON_SHEET.map(n => `
+  <div class="review-card">
+    <div class="rc-top"><span class="rc-match">${n.matchup}</span><span class="rc-meta">${n.date} · ${n.time}</span></div>
+    <div class="rc-note">${n.note}</div>
+    <div class="rc-src">Seen on: ${n.source}</div>
+  </div>`).join('') : '<p class="section-sub">Nothing flagged this run.</p>';
+
+// ---------- next steps (with localStorage-persisted checkmarks) ----------
+// Checked-off state is saved in THIS BROWSER only (localStorage) — it isn't
+// shared across devices or visible to anyone else who opens this page, and
+// Claude can't read it back. Keyed by each step's stable `id`, not its
+// position, so re-ordering or removing steps in a future update never
+// mismatches an old checkmark onto the wrong step.
+let doneState = {};
+try{ doneState = JSON.parse(localStorage.getItem('jrhc-steps-done') || '{}'); }catch(e){}
+function saveDone(){ try{ localStorage.setItem('jrhc-steps-done', JSON.stringify(doneState)); }catch(e){} }
+
+function stepLi(s, num){
+  return `
+  <li class="step ${doneState[s.id] ? 'done' : ''}" data-id="${s.id}">
+    <span class="step-num">${doneState[s.id] ? '✓' : num}</span>
+    <label>
+      <input type="checkbox" ${doneState[s.id] ? 'checked' : ''} aria-label="Mark '${s.title}' done">
+      <span class="step-body">
+        <strong>${s.title}</strong>
+        <span>${s.body}</span>
+        ${s.drafts ? `<details class="drafts"><summary>View draft emails (${s.drafts.length})</summary>
+          ${s.drafts.map((d,j) => `<div class="draft">
+            <button class="copy-draft-btn" data-id="${s.id}" data-draft="${j}" type="button">${COPY_ICON}Copy</button>
+            <div class="subj">${d.subj}</div><div class="body">${d.body}</div>
+          </div>`).join('')}
+        </details>` : ''}
+      </span>
+    </label>
+  </li>`;
+}
+
+function renderSteps(){
+  const open = STEPS.filter(s => !doneState[s.id]);
+  const done = STEPS.filter(s => doneState[s.id]);
+
+  document.getElementById('steps').innerHTML = open.map((s,i) => stepLi(s, i+1)).join('');
+  document.getElementById('steps-empty').hidden = open.length > 0;
+
+  const completedWrap = document.getElementById('completed-wrap');
+  completedWrap.hidden = done.length === 0;
+  document.getElementById('completed-count').textContent = done.length;
+  document.getElementById('steps-done').innerHTML = done.map(s => stepLi(s)).join('');
+}
+renderSteps();
+
+document.getElementById('steps-container').addEventListener('change', e => {
+  if(e.target.type !== 'checkbox') return;
+  const li = e.target.closest('.step');
+  doneState[li.dataset.id] = e.target.checked;
+  saveDone();
+  renderSteps();
+});
+
+renderStats();
+applyFilters();
+</script>
+<script>
+
+// ---------- access gate (client-side only — a deterrent, not real security;
+// view-source or devtools reveal the page and this password either way) ----------
+(function(){
+  var PASSWORD = "Railers2026";
+  var STORAGE_KEY = "jrhc-status-unlocked";
+  var lockScreen = document.getElementById('lock-screen');
+  var pageContent = document.getElementById('page-content');
+  function unlock(){
+    lockScreen.hidden = true;
+    pageContent.hidden = false;
+  }
+  var already = false;
+  try{ already = localStorage.getItem(STORAGE_KEY) === '1'; }catch(e){}
+  if(already){ unlock(); return; }
+  document.getElementById('lock-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    var val = document.getElementById('lock-pw').value;
+    if(val === PASSWORD){
+      try{ localStorage.setItem(STORAGE_KEY, '1'); }catch(e){}
+      unlock();
+    } else {
+      document.getElementById('lock-error').textContent = 'Incorrect password.';
+      document.getElementById('lock-pw').select();
+    }
+  });
+})();
+</script>
+</body>
+</html>
