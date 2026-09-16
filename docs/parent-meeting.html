@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parent &amp; Coach Meeting</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --ice:#eef1f5;
+    --surface:#ffffff;
+    --ink:#0f2c52;
+    --steel:#52627a;
+    --steel-soft:#8b98a6;
+    --line:#d3dde6;
+    --rink-navy:#0f2c52;
+    --rink-navy-deep:#081729;
+    --faceoff-red:#2360b5;
+    --faceoff-red-ink:#184a91;
+    --crease-blue:#2360b5;
+    --frost:#e4edf8;
+    --focus-ring:#2360b5;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ice:#081729;
+      --surface:#0f2c52;
+      --ink:#eef3f8;
+      --steel:#adb2b6;
+      --steel-soft:#7c93ab;
+      --line:#2a4a72;
+      --rink-navy:#0f2c52;
+      --rink-navy-deep:#050f1c;
+      --faceoff-red:#5b9bdc;
+      --faceoff-red-ink:#8fc1e8;
+      --crease-blue:#5b9bdc;
+      --frost:#163a66;
+      --focus-ring:#5b9bdc;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ice:#081729;
+    --surface:#0f2c52;
+    --ink:#eef3f8;
+    --steel:#adb2b6;
+    --steel-soft:#7c93ab;
+    --line:#2a4a72;
+    --rink-navy:#0f2c52;
+    --rink-navy-deep:#050f1c;
+    --faceoff-red:#5b9bdc;
+    --faceoff-red-ink:#8fc1e8;
+    --crease-blue:#5b9bdc;
+    --frost:#163a66;
+    --focus-ring:#5b9bdc;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ height:100%; }
+  html, body{ margin:0; overflow:hidden; }
+  body{
+    height:100vh;
+    background:var(--ice);
+    color:var(--ink);
+    font-family:"Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{ color:var(--crease-blue); }
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--focus-ring);
+    outline-offset:2px;
+    border-radius:3px;
+  }
+  .mono{ font-family:"IBM Plex Mono", ui-monospace, Menlo, monospace; }
+
+  /* ---- Password gate ---- */
+  #gate{
+    position:fixed; inset:0; z-index:999;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--rink-navy, #0f2c52);
+    padding:1.5rem;
+  }
+  #gate .box{
+    width:100%; max-width:22rem;
+    background:var(--surface, #fff);
+    border-radius:12px;
+    padding:2rem 1.75rem;
+    text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,0.35);
+  }
+  #gate h2{
+    margin:0 0 0.4rem;
+    font-family:"Teko", "Arial Narrow", sans-serif;
+    font-size:1.8rem;
+    color:var(--ink, #0f2c52);
+  }
+  #gate p{
+    margin:0 0 1.1rem;
+    font-size:0.85rem;
+    color:var(--steel, #52627a);
+    font-family:"Public Sans", sans-serif;
+  }
+  #gate input{
+    width:100%;
+    padding:0.6rem 0.8rem;
+    border:1px solid var(--line, #d3dde6);
+    border-radius:7px;
+    font-size:0.95rem;
+    margin-bottom:0.7rem;
+    box-sizing:border-box;
+    font-family:"Public Sans", sans-serif;
+  }
+  #gate button{
+    width:100%;
+    padding:0.6rem 0.8rem;
+    border:none;
+    border-radius:7px;
+    background:var(--faceoff-red, #2360b5);
+    color:#fff;
+    font-size:0.9rem;
+    font-weight:600;
+    cursor:pointer;
+    font-family:"Public Sans", sans-serif;
+  }
+  #gate .err{
+    color:#c2453d;
+    font-size:0.8rem;
+    margin-top:0.6rem;
+    min-height:1em;
+    font-family:"Public Sans", sans-serif;
+  }
+
+  #deck-root{ height:100%; }
+  #slides{ position:relative; height:100%; }
+
+  .slide{
+    position:absolute; inset:0;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:5rem 4rem 4.5rem;
+    text-align:left;
+    overflow-y:auto;
+    overflow-x:hidden;
+  }
+  .slide.active{ display:flex; }
+  @media (prefers-reduced-motion:no-preference){
+    .slide.active{ animation:slidein .32s ease; }
+  }
+  @keyframes slidein{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+
+  .slide--title, .slide--divider{
+    background:linear-gradient(160deg, var(--rink-navy) 0%, var(--rink-navy-deep) 100%);
+    color:#eef4f9;
+    text-align:center;
+    position:relative;
+  }
+  .slide--content, .slide--diagram{
+    background:var(--ice);
+    color:var(--ink);
+    align-items:flex-start;
+    position:relative;
+  }
+
+  .eyebrow{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:clamp(0.8rem, 1.1vw, 1rem);
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:#9fb7cc;
+    margin:0 0 1rem;
+  }
+  .slide--content .eyebrow, .slide--diagram .eyebrow{ color:var(--faceoff-red-ink); }
+
+  .slide--title h1, .slide--divider h1{
+    margin:0;
+    font-family:"Teko", "Arial Narrow", sans-serif;
+    font-weight:600;
+    font-size:clamp(3rem, 9vw, 6.4rem);
+    line-height:0.95;
+    color:#fff;
+    text-wrap:balance;
+  }
+  .slide--title .sub{
+    max-width:42rem;
+    color:#c3d5e3;
+    font-size:clamp(1rem, 1.6vw, 1.35rem);
+    margin:1.3rem 0 0;
+  }
+
+  .slide-head{ width:100%; max-width:58rem; margin:0 0 1.6rem; }
+  .slide-head h2{
+    margin:0;
+    font-family:"Teko", sans-serif;
+    font-weight:600;
+    font-size:clamp(2.1rem, 4.2vw, 3.2rem);
+    line-height:1;
+    color:var(--ink);
+  }
+
+  .slide-body{ width:100%; max-width:58rem; overflow-y:auto; max-height:calc(100vh - 15rem); }
+  .slide-body p.lead{ font-size:clamp(1.05rem, 1.6vw, 1.4rem); color:var(--ink); margin:0 0 1rem; }
+  .slide-body .subhead{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:clamp(0.72rem, 1vw, 0.85rem);
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--faceoff-red-ink);
+    margin:1.4rem 0 0.6rem;
+  }
+  .slide-body .subhead:first-child{ margin-top:0; }
+  .slide-body .subnote{ font-size:clamp(0.85rem, 1.2vw, 1rem); color:var(--steel); margin:-0.3rem 0 0.6rem; }
+
+  .slide-body ul, .slide-body ol{ margin:0 0 1rem; padding-left:1.5rem; }
+  .slide-body li{ font-size:clamp(1rem, 1.5vw, 1.3rem); line-height:1.45; margin-bottom:0.65rem; }
+  .slide-body strong{ color:var(--ink); }
+  .slide-body ul.two-col{ columns:2; column-gap:2.5rem; }
+  .slide-body ul.two-col li{ break-inside:avoid; }
+
+  .slide-body .note{
+    background:var(--frost);
+    border-radius:10px;
+    padding:0.9rem 1.15rem;
+    font-size:clamp(0.9rem, 1.3vw, 1.05rem);
+    color:var(--ink);
+    margin:0.5rem 0 1rem;
+  }
+  .slide-body .note .lbl{
+    display:block;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.68rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--faceoff-red-ink);
+    margin-bottom:0.35rem;
+  }
+
+  .tag{
+    display:inline-block;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.62rem;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    padding:0.15rem 0.6rem;
+    border-radius:999px;
+    margin-left:0.6rem;
+    vertical-align:middle;
+    background:var(--frost);
+    color:var(--faceoff-red-ink);
+    border:1px solid var(--crease-blue);
+    white-space:nowrap;
+  }
+
+  /* ---- Chrome: top bar, progress, nav, menu ---- */
+  .topbar-fixed{
+    position:fixed; top:0; left:0; right:0;
+    z-index:30;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0.75rem 1.1rem;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.78rem;
+    color:var(--steel);
+    pointer-events:none;
+  }
+  .topbar-fixed > *{ pointer-events:auto; }
+  .topbar-left, .topbar-right{ display:flex; align-items:center; gap:0.6rem; }
+
+  .icon-btn{
+    background:color-mix(in srgb, var(--surface) 85%, transparent);
+    border:1px solid var(--line);
+    color:var(--steel);
+    border-radius:8px;
+    width:2.1rem; height:2.1rem;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    font-size:1rem;
+    backdrop-filter:blur(6px);
+  }
+  .icon-btn:hover{ border-color:var(--crease-blue); color:var(--crease-blue); }
+
+  .counter{
+    background:color-mix(in srgb, var(--surface) 85%, transparent);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:0.35rem 0.9rem;
+    backdrop-filter:blur(6px);
+  }
+  .handbook-link{
+    background:color-mix(in srgb, var(--surface) 85%, transparent);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:0.35rem 0.9rem;
+    text-decoration:none;
+    color:var(--steel);
+    backdrop-filter:blur(6px);
+  }
+  .handbook-link:hover{ border-color:var(--crease-blue); color:var(--crease-blue); }
+
+  .progress-fixed{ position:fixed; bottom:0; left:0; right:0; height:3px; background:var(--line); z-index:30; }
+  .progress-fill{ height:100%; background:var(--faceoff-red); width:0%; transition:width 0.25s ease; }
+
+  .nav-fixed{ position:fixed; bottom:1.3rem; right:1.3rem; z-index:30; display:flex; gap:0.5rem; }
+  .nav-fixed button{
+    width:2.6rem; height:2.6rem;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--ink);
+    font-size:1.2rem;
+    cursor:pointer;
+    box-shadow:0 4px 14px rgba(15,44,82,0.15);
+  }
+  .nav-fixed button:hover{ border-color:var(--crease-blue); color:var(--crease-blue); }
+  .nav-fixed button:disabled{ opacity:0.35; cursor:default; }
+
+  .menu-overlay{
+    position:fixed; inset:0; z-index:40;
+    background:color-mix(in srgb, var(--rink-navy) 88%, transparent);
+    backdrop-filter:blur(4px);
+    display:flex; align-items:center; justify-content:center;
+    padding:2rem;
+  }
+  .menu-overlay[hidden]{ display:none; }
+  .menu-box{
+    width:100%; max-width:40rem; max-height:85vh;
+    overflow-y:auto;
+    background:var(--surface);
+    border-radius:14px;
+    padding:1.6rem 1.8rem;
+    box-shadow:0 24px 70px rgba(0,0,0,0.4);
+  }
+  .menu-box h3{
+    margin:0 0 1rem;
+    font-family:"Teko", sans-serif;
+    font-weight:600;
+    font-size:1.5rem;
+    color:var(--ink);
+  }
+  .menu-section{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:0.68rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--steel);
+    margin:1.1rem 0 0.4rem;
+  }
+  .menu-section:first-of-type{ margin-top:0; }
+  .menu-item{
+    display:block; width:100%; text-align:left;
+    background:none; border:none;
+    border-radius:7px;
+    padding:0.5rem 0.6rem;
+    font-size:0.95rem;
+    color:var(--ink);
+    cursor:pointer;
+    font-family:"Public Sans", sans-serif;
+  }
+  .menu-item:hover{ background:var(--frost); color:var(--crease-blue); }
+  .menu-item.current{ color:var(--faceoff-red-ink); font-weight:600; }
+  .menu-hint{
+    font-size:0.78rem; color:var(--steel);
+    margin:1.2rem 0 0;
+    padding-top:0.9rem;
+    border-top:1px solid var(--line);
+  }
+
+  @media (max-width:720px){
+    .slide{ padding:4.5rem 1.4rem 3.5rem; }
+    .slide-body{ max-height:calc(100vh - 12rem); }
+    .topbar-fixed{ flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="box">
+    <h2>Parent &amp; Coach Meeting</h2>
+    <p>Junior Railers 15U Select. Enter the password to continue.</p>
+    <input type="password" id="gatePw" placeholder="Password" autocomplete="off">
+    <button type="button" id="gateBtn">Unlock</button>
+    <div class="err" id="gateErr"></div>
+  </div>
+</div>
+
+<div id="deck-root" style="display:none;">
+  <div class="topbar-fixed">
+    <div class="topbar-left">
+      <button class="icon-btn" id="menuBtn" title="Jump to slide (Esc)">&#9776;</button>
+      <button class="icon-btn" id="fullscreenBtn" title="Toggle fullscreen">&#10021;</button>
+    </div>
+    <div class="topbar-right">
+      <a class="handbook-link" href="team-handbook.html" target="_blank" rel="noopener">Team Handbook &#8599;</a>
+      <span class="counter mono" id="counter">1 / 1</span>
+    </div>
+  </div>
+
+  <div id="slides"></div>
+
+  <div class="progress-fixed"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="nav-fixed">
+    <button type="button" id="prevBtn" aria-label="Previous slide">&#8249;</button>
+    <button type="button" id="nextBtn" aria-label="Next slide">&#8250;</button>
+  </div>
+
+  <div class="menu-overlay" id="menuOverlay" hidden>
+    <div class="menu-box">
+      <h3>Jump to a slide</h3>
+      <div id="menuList"></div>
+      <div class="menu-hint">Arrow keys or space to move slide-by-slide &middot; Esc to open/close this menu &middot; click a title to jump straight there.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+
+  var SLIDES = [
+    { type:'title', eyebrow:'Junior Railers Hockey Club &middot; 15U Select &middot; 2026-27 Season',
+      title:'Parent &amp; Coach Meeting',
+      sub:'A recap of what the team already heard, the logistics that keep us running, and where this season is headed.' },
+
+    { type:'content', section:'Meeting Agenda', title:'Tonight&rsquo;s Agenda',
+      body:[
+        { ul:[
+          '<strong>Team rules</strong> &mdash; the same version the players already heard at last week&rsquo;s team meeting',
+          '<strong>Logistics</strong> &mdash; arrival, warmups, practice, communication',
+          '<strong>Systems</strong> &mdash; a quick word, not a deep dive',
+          '<strong>Tournament #2</strong> &mdash; a decision we need to make together',
+          '<strong>Coaches&rsquo; expectations</strong> &mdash; what we want this team to get out of the season',
+          '<strong>Questions</strong> &mdash; open floor'
+        ]},
+        { note:{ lbl:'Why we&rsquo;re doing this', text:'The players got this material directly from us at last week&rsquo;s team meeting. Tonight isn&rsquo;t new rules &mdash; it&rsquo;s making sure you heard the same version they did.' } }
+      ]
+    },
+
+    { type:'divider', section:'Recap &middot; Part 1', title:'Team Rules &amp; Expectations' },
+
+    { type:'content', section:'Recap &middot; Part 1 &middot; Team Rules', title:'Communication',
+      body:[
+        { ul:[
+          'All hockey communication is <strong>directly between coaches and players</strong> &mdash; not through parents.',
+          'If a player has a question, an issue, or needs to report an absence, <strong>the player reaches out</strong> &mdash; not a parent on their behalf.',
+          'Questions about a player&rsquo;s own hockey &mdash; ice time, a decision, feedback &mdash; should come from the player.'
+        ]}
+      ]
+    },
+
+    { type:'content', section:'Recap &middot; Part 1 &middot; Team Rules', title:'Attendance',
+      body:[
+        { ul:[
+          'We expect players <strong>at every practice</strong> &mdash; missing practice can impact playing time.',
+          'Real conflicts happen &mdash; school sports, family commitments &mdash; and that&rsquo;s understood.',
+          'There&rsquo;s a difference between a <strong>legitimate need</strong> and <strong>poor time management</strong>.',
+          'Players update <strong>their own</strong> attendance in Crossbar &mdash; not a parent&rsquo;s job.'
+        ]}
+      ]
+    },
+
+    { type:'content', section:'Recap &middot; Part 1 &middot; Team Rules', title:'Equipment &amp; Uniforms',
+      body:[
+        { ul:[
+          'Full equipment at every practice and game &mdash; <strong>including neck guards</strong>. No exceptions.',
+          'Correct jerseys and socks for practice and games &mdash; know before you show up.',
+          'Bring <strong>both uniforms</strong> (home and away) to every game.',
+          'Players confirm which jersey we&rsquo;re wearing with the opposing team before warmups &mdash; nobody should be hunting for a spare on game day.'
+        ]}
+      ]
+    },
+
+    { type:'content', section:'Recap &middot; Part 1 &middot; Team Rules', title:'Playing Time, Lineups &amp; Goalies',
+      body:[
+        { ul:[
+          '<strong>Playing time is earned, not even</strong> &mdash; based on commitment, performance, attitude, and being a good teammate.',
+          'We carry 3 alternates &mdash; <strong>Lucey, Reissner, Nordman</strong> &mdash; called on when the full roster isn&rsquo;t available.',
+          'Goalies alternate through the season &mdash; announced at Thursday practice for the weekend ahead.',
+          'A mid-game goalie change can happen if we feel it helps the team.'
+        ]}
+      ]
+    },
+
+    { type:'content', section:'Recap &middot; Part 1 &middot; Team Rules', title:'Respect, Conduct &amp; the Locker Room',
+      body:[
+        { ul:[
+          'Players represent themselves, the team, the club, and their family &mdash; everywhere, all the time.',
+          'Respect for teammates, coaches, officials, opponents, and rink staff.',
+          'No phones or recording devices in the locker room; only players, coaches, and approved team personnel in the room.',
+          '<strong>Locker rooms get left clean</strong> &mdash; every time, every rink.'
+        ]}
+      ]
+    },
+
+    { type:'content', section:'Recap &middot; Part 1 &middot; Team Rules', title:'Discipline &mdash; How It Works',
+      body:[
+        { lead:'A tiered approach. Coaches keep discretion to escalate based on severity &mdash; this is a floor, not a formula.' },
+        { subhead:'Minor offenses' },
+        { subnote:'disrespect toward an official, equipment/uniform issues, an unreported no-show' },
+        { ol:[ '1st: a warning and a conversation.', '2nd: expect to sit out.' ] },
+        { subhead:'Serious offenses' },
+        { subnote:'fighting or instigating, abusive language, hazing, unauthorized recording in the room' },
+        { ol:[ 'Minimum 1&ndash;2 game suspension, at the staff&rsquo;s discretion.' ] },
+        { subhead:'Zero-tolerance offenses' },
+        { subnote:'violence beyond the play of the game, harassment or discrimination, drugs/alcohol/vaping at a team event' },
+        { ol:[ 'Immediate removal from the event; up to removal from the team for the season.' ] }
+      ]
+    },
+
+    { type:'divider', section:'Recap &middot; Part 2', title:'Logistics' },
+
+    { type:'content', section:'Recap &middot; Part 2 &middot; Logistics', title:'Game Day',
+      body:[
+        { ul:[
+          '<strong>Arrive no later than 45 minutes</strong> before game time.',
+          '<strong>Off-ice warmup starts 40 minutes before</strong> &mdash; captain-led, organized.',
+          'Players confirm home/away jersey with the opposing coaches and relay it to the team before warmups.',
+          '<strong>Fully dressed before the Zamboni is on the ice</strong> &mdash; by 10 minutes out, full attention on the game plan.'
+        ]}
+      ]
+    },
+
+    { type:'content', section:'Recap &middot; Part 2 &middot; Logistics', title:'Practice &amp; Staying Informed',
+      body:[
+        { ul:[
+          '<strong>Practice plans post to Crossbar by 2:00 PM</strong> on practice days.',
+          'Players are expected to check Crossbar regularly &mdash; schedule changes, jersey info, and team comms all live there.',
+          'Same equipment standard as games &mdash; full gear, correct jerseys and socks.'
+        ]},
+        { note:{ lbl:'For parents', text:'Crossbar is the source of truth for schedule and logistics &mdash; you&rsquo;re welcome to check it too. It just doesn&rsquo;t replace the player owning it.' } }
+      ]
+    },
+
+    { type:'content', section:'Recap &middot; Part 2 &middot; Logistics', title:'After the Game',
+      body:[
+        { ul:[
+          'When coaches enter the room &mdash; freeze, stop undressing, listen.',
+          'Support teammates. Nobody makes the perfect play every time &mdash; there&rsquo;s no calling each other out.',
+          'Constructive criticism, then move on: learn from a loss, stay humble in a win.'
+        ]}
+      ]
+    },
+
+    { type:'content', section:'Recap &middot; Part 3', title:'Systems &mdash; A Quick Word',
+      body:[
+        { ul:[
+          'We have hockey systems &mdash; the players should know them. Each year we add more.',
+          'One reason to work on systems, whether or not a player uses them at their high school: being able to be taught any system and then execute it.',
+          'Not covering systems in depth tonight, like we did with the kids &mdash; more than happy to answer questions if you have any.'
+        ]}
+      ]
+    },
+
+    { type:'divider', section:'Season Planning', title:'Boston Breakout Recap' },
+
+    { type:'content', section:'Season Planning &middot; Recap', title:'Boston Breakout Recap',
+      body:[
+        { lead:'Sept 11&ndash;13, New England (MA/NH) &mdash; 15U division, 4 games. Our first tournament as a group this season.' },
+        { subhead:'What went well' },
+        { ul:[
+          'Penalty kill forecheck was strong &mdash; turned into goals.',
+          'The middle lane drive worked &mdash; generated offense off the rush and down low.',
+          'Offense wasn&rsquo;t just one line &mdash; production was spread across the roster.'
+        ]},
+        { subhead:'What we need to clean up' },
+        { ul:[
+          'Attitude at times when we were losing &mdash; needs to be better.',
+          'Staying out of the extracurricular stuff after the whistle instead of getting pulled into it.',
+          'Understanding when to play defense versus when to attack.',
+          'Transitions hurt us this weekend, and defensive-zone coverage was inconsistent.'
+        ]}
+      ]
+    },
+
+    { type:'divider', section:'Season Planning', title:'Tournament #2' },
+
+    { type:'content', section:'Season Planning &middot; Tournament #2', title:'Where We Stand',
+      body:[
+        { lead:'Tournament #2 hasn&rsquo;t been chosen yet &mdash; it needs to work around the calendar and get a commitment from the group. The option we want to bring to you tonight:' },
+        { subhead:'Beast Columbus Day Shootout' },
+        { ul:[
+          '<strong>Dates:</strong> Oct 9&ndash;12, 2026 &mdash; Columbus Day weekend',
+          '<strong>Location:</strong> Mass Rinks, Attleboro, MA',
+          '<strong>Division:</strong> 15U',
+          '<strong>Format:</strong> team&rsquo;s choice &mdash; 2, 3, or 4 games',
+          '<strong>Cost:</strong> $2,640 (league member) / $2,740 (guest team)'
+        ]},
+        { note:{ lbl:'Decision needed tonight', text:'A read on interest, and a preference on game count &mdash; that decision drives the cost per family.' } }
+      ]
+    },
+
+    { type:'divider', section:'From the Coaches', title:'Coaches&rsquo; Expectations' },
+
+    { type:'content', section:'From the Coaches', title:'Coaches&rsquo; Expectations',
+      body:[
+        { subhead:'What we want players to get out of this' },
+        { ul:[
+          'Growth as hockey players &mdash; <strong>and</strong> as young men, on and off the ice.',
+          'Real ownership: of preparation, of communication, of their own mistakes.',
+          'Teammates and relationships that outlast this season.',
+          'What it feels like to genuinely compete &mdash; and bring that to their high school team post-Thanksgiving.'
+        ]},
+        { subhead:'What it takes for us to succeed' },
+        { ul:[
+          'Full buy-in &mdash; <strong>we practice like we play</strong>.',
+          'Attendance and communication &mdash; we can&rsquo;t plan around silence.',
+          'Compete for everything: a lineup spot, every puck, every shift.',
+          'Support each other &mdash; on the bench, in the room, away from the rink.',
+          'Trust the process on systems &mdash; the reps now are what shows up in games.'
+        ]}
+      ]
+    },
+
+    { type:'title', eyebrow:'Junior Railers Hockey Club &middot; 15U Select',
+      title:'Questions?' }
+  ];
+
+  // ---------- render slides ----------
+  var slidesRoot = document.getElementById('slides');
+
+  function renderBodyPart(part){
+    if(part.ul){
+      return '<ul>' + part.ul.map(function(li){ return '<li>' + li + '</li>'; }).join('') + '</ul>';
+    }
+    if(part.ol){
+      return '<ol>' + part.ol.map(function(li){ return '<li>' + li + '</li>'; }).join('') + '</ol>';
+    }
+    if(part.lead){ return '<p class="lead">' + part.lead + '</p>'; }
+    if(part.subhead){ return '<div class="subhead">' + part.subhead + '</div>'; }
+    if(part.subnote){ return '<p class="subnote">' + part.subnote + '</p>'; }
+    if(part.note){
+      return '<div class="note"><span class="lbl">' + part.note.lbl + '</span>' + part.note.text + '</div>';
+    }
+    return '';
+  }
+
+  function buildSlide(s, i){
+    var el = document.createElement('div');
+    el.id = 'slide-' + i;
+
+    if(s.type === 'title'){
+      el.className = 'slide slide--title';
+      el.innerHTML =
+        '<p class="eyebrow">' + s.eyebrow + '</p>' +
+        '<h1>' + s.title + '</h1>' +
+        (s.sub ? '<p class="sub">' + s.sub + '</p>' : '');
+      return el;
+    }
+    if(s.type === 'divider'){
+      el.className = 'slide slide--divider';
+      el.innerHTML =
+        '<p class="eyebrow">' + s.section + '</p>' +
+        '<h1>' + s.title + '</h1>';
+      return el;
+    }
+    el.className = 'slide slide--content';
+    var tag = s.tag ? '<span class="tag">' + s.tag + '</span>' : '';
+    el.innerHTML =
+      '<div class="slide-head"><p class="eyebrow">' + s.section + '</p><h2>' + s.title + tag + '</h2></div>' +
+      '<div class="slide-body">' + s.body.map(renderBodyPart).join('') + '</div>';
+    return el;
+  }
+
+  SLIDES.forEach(function(s, i){ slidesRoot.appendChild(buildSlide(s, i)); });
+
+  // ---------- jump menu (two-tier: divider title, then section) ----------
+  (function(){
+    var html = '';
+    var lastSection = null;
+    SLIDES.forEach(function(s, i){
+      if(s.type === 'divider'){
+        html += '<div class="menu-section">' + s.title.replace(/&amp;/g,'&').replace(/&rsquo;/g,'’') + '</div>';
+        html += '<button type="button" class="menu-item" data-index="' + i + '">' + s.title.replace(/&amp;/g,'&').replace(/&rsquo;/g,'’') + '</button>';
+        lastSection = null;
+      } else {
+        var sec = s.section || '';
+        if(sec !== lastSection){
+          html += '<div class="menu-section">' + sec.replace(/&middot;/g,'·').replace(/&rsquo;/g,'’') + '</div>';
+          lastSection = sec;
+        }
+        var label = s.title.replace(/&amp;/g,'&').replace(/&mdash;/g,'—').replace(/&rsquo;/g,'’');
+        html += '<button type="button" class="menu-item" data-index="' + i + '">' + label + '</button>';
+      }
+    });
+    document.getElementById('menuList').innerHTML = html;
+  })();
+
+  // ---------- nav state ----------
+  var idx = 0;
+  var total = SLIDES.length;
+  var slideEls = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var menuItems = Array.prototype.slice.call(document.querySelectorAll('.menu-item'));
+  var counterEl = document.getElementById('counter');
+  var progressFill = document.getElementById('progressFill');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var menuOverlay = document.getElementById('menuOverlay');
+
+  function render(){
+    slideEls.forEach(function(el, i){ el.classList.toggle('active', i === idx); });
+    counterEl.textContent = (idx+1) + ' / ' + total;
+    progressFill.style.width = (((idx+1) / total) * 100) + '%';
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === total - 1;
+    menuItems.forEach(function(btn){
+      btn.classList.toggle('current', parseInt(btn.dataset.index,10) === idx);
+    });
+  }
+  function go(n){ idx = Math.max(0, Math.min(total-1, n)); render(); }
+
+  prevBtn.addEventListener('click', function(){ go(idx-1); });
+  nextBtn.addEventListener('click', function(){ go(idx+1); });
+
+  function openMenu(){ menuOverlay.hidden = false; }
+  function closeMenu(){ menuOverlay.hidden = true; }
+  document.getElementById('menuBtn').addEventListener('click', openMenu);
+  menuOverlay.addEventListener('click', function(e){
+    if(e.target === menuOverlay) closeMenu();
+  });
+  document.getElementById('menuList').addEventListener('click', function(e){
+    var btn = e.target.closest('.menu-item');
+    if(btn){ go(parseInt(btn.dataset.index,10)); closeMenu(); }
+  });
+
+  document.getElementById('fullscreenBtn').addEventListener('click', function(){
+    if(!document.fullscreenElement){ document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); }
+    else{ document.exitFullscreen && document.exitFullscreen(); }
+  });
+
+  window.addEventListener('keydown', function(e){
+    var menuOpen = !menuOverlay.hidden;
+    if(e.key === 'Escape'){
+      if(menuOpen) closeMenu(); else openMenu();
+      e.preventDefault(); return;
+    }
+    if(menuOpen) return;
+    if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ go(idx+1); e.preventDefault(); }
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ go(idx-1); e.preventDefault(); }
+    else if(e.key === 'Home'){ go(0); e.preventDefault(); }
+    else if(e.key === 'End'){ go(total-1); e.preventDefault(); }
+  });
+
+  render();
+})();
+</script>
+
+<script>
+(function () {
+  "use strict";
+  var HASH = "978d657be20a82b87941d32cb19f89140c2996a17c3cf5ce51843b50fa5074f2";
+  var STORE_KEY = "jrhc-parent-meeting-unlocked";
+
+  function sha256(text) {
+    var enc = new TextEncoder().encode(text);
+    return crypto.subtle.digest("SHA-256", enc).then(function (buf) {
+      return Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+    });
+  }
+
+  function reveal() {
+    document.getElementById("gate").style.display = "none";
+    document.getElementById("deck-root").style.display = "";
+  }
+
+  function tryUnlock() {
+    var val = document.getElementById("gatePw").value;
+    sha256(val).then(function (digest) {
+      if (digest === HASH) {
+        try { localStorage.setItem(STORE_KEY, "1"); } catch (e) {}
+        reveal();
+      } else {
+        document.getElementById("gateErr").textContent = "That's not it — try again.";
+      }
+    });
+  }
+
+  var already = false;
+  try { already = localStorage.getItem(STORE_KEY) === "1"; } catch (e) {}
+  if (already) {
+    reveal();
+  } else {
+    document.getElementById("gateBtn").addEventListener("click", tryUnlock);
+    document.getElementById("gatePw").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") tryUnlock();
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
