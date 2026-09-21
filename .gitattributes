@@ -1,0 +1,5 @@
+# RFC 5545 requires literal CRLF line endings in .ics files. Without this,
+# Windows git's core.autocrlf=true silently strips the \r on commit, and the
+# custom \r\n-joining in csv_to_ics.py can double it on write instead. Mark
+# .ics as binary so git never touches these bytes in either direction.
+*.ics -text
