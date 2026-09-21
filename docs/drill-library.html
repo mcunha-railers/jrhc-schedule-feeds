@@ -719,6 +719,9 @@ const DATA = [
     drills: [
       { name: "Kraken", summary: "Named battle-drill family covering 1 on 1, 2 on 1, and 2 on 2, run at both ends of the ice.",
         video: "https://www.instagram.com/p/C9CyxCKAfk7/" },
+      { name: "Battle Combine (1v1 to 3v2)", summary: "Continuous progression from a 1-on-1 corner battle into a breakout, a 2-on-1, and a point shot with traffic in front.",
+        detail: "<p>F1 battles D1 one-on-one out of the corner, fighting to the net for a scoring chance &mdash; no set path, just compete. On the next whistle the battle is blown dead: F1 releases to the wall and D1 retrieves the loose puck for a clean breakout pass. At the same moment, F2, D2, and F3 activate through the neutral zone &mdash; F2 to D2, D2 to F3 &mdash; then F2 and F3 attack the net 2-on-1 against D2, again just battling for the finish rather than following a set path.</p><p>F1, now carrying the breakout pass, chips the puck over the bumper into the neutral zone, where D3 corrals it (hands, feet, or stick) and quickly moves it to D4. D4 jumps into the offensive zone and rips a low, hard shot from the point. F1 trails to screen the goalie with D1 shadowing him the whole way, so by the time D4 shoots there are three forwards and two defensemen crashing and defending the net front.</p>",
+        video: "https://claude.ai/code/artifact/8f254320-420f-4f24-bf95-cad3d739cfcd", videoLabel: "Diagram" },
       { name: "Behind Net Battle (2 on 2 / 3 on 2)", summary: "Puck battle below the goal line that opens into a 3-on-2 on the whistle.",
         detail: "<p>Two players from each team battle for a puck. They must stay below the goal line. On the whistle, whichever team has the puck goes on offense, and a third player from their team enters the play.</p>" },
       { name: "1 on 1 / 2 on 1 Pass Down and Shadow", summary: "Pass-and-follow battle drill." },
@@ -827,7 +830,7 @@ chipRow.innerHTML = ["all", ...DATA.map(c => c.id)].map(id => {
 }).join("");
 
 function cardHTML(d) {
-  const video = d.video ? `<a class="video-link" href="${d.video}" target="_blank" rel="noopener">&#9654; Watch</a>` : "";
+  const video = d.video ? `<a class="video-link" href="${d.video}" target="_blank" rel="noopener">&#9654; ${d.videoLabel || "Watch"}</a>` : "";
   const details = d.detail
     ? `<details><summary></summary><div class="detail-body">${d.detail}</div></details>`
     : "";

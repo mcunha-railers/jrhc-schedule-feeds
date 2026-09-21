@@ -119,7 +119,12 @@ def main():
         team_rows.sort(key=lambda r: (r["GameDate"], r["StartTime"]))
         events = [build_event(r, team_name, short) for r in team_rows]
         filename = f"{slugify(team_name)}.ics"
-        (output_dir / filename).write_text(build_calendar(team_name, events), encoding="utf-8")
+        # newline="" is required: the calendar text already uses explicit \r\n (RFC 5545),
+        # and without this, Python's text-mode write re-translates each \n to the platform
+        # line separator (\r\n on Windows), doubling the \r into \r\r\n.
+        (output_dir / filename).write_text(
+            build_calendar(team_name, events), encoding="utf-8", newline=""
+        )
         manifest[team_name] = {"filename": filename, "game_count": len(events)}
         print(f"{team_name}: {len(events)} games -> {filename}")
 
