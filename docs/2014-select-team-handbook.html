@@ -1,0 +1,750 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team Handbook &middot; 2014 Select</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+#gate {
+position: fixed;
+inset: 0;
+z-index: 999;
+display: flex;
+align-items: center;
+justify-content: center;
+background: var(--rink-navy, #0f2c52);
+padding: 1.5rem;
+}
+
+#gate .box {
+width: 100%;
+max-width: 22rem;
+background: var(--surface, #fff);
+border-radius: 12px;
+padding: 2rem 1.75rem;
+text-align: center;
+box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
+#gate h2 {
+margin: 0 0 0.4rem;
+font-family: "Teko", "Arial Narrow", sans-serif;
+font-size: 1.8rem;
+color: var(--ink, #0f2c52);
+}
+#gate p {
+margin: 0 0 1.1rem;
+font-size: 0.85rem;
+color: var(--steel, #52627a);
+font-family: "Public Sans", sans-serif;
+}
+#gate input {
+width: 100%;
+padding: 0.6rem 0.8rem;
+border: 1px solid var(--line, #d3dde6);
+border-radius: 7px;
+font-size: 0.95rem;
+margin-bottom: 0.7rem;
+box-sizing: border-box;
+font-family: "Public Sans", sans-serif;
+}
+#gate button {
+width: 100%;
+padding: 0.6rem 0.8rem;
+border: none;
+border-radius: 7px;
+background: var(--faceoff-red, #2360b5);
+color: #fff;
+font-size: 0.9rem;
+font-weight: 600;
+cursor: pointer;
+font-family: "Public Sans", sans-serif;
+}
+#gate .err {
+color: #c2453d;
+font-size: 0.8rem;
+margin-top: 0.6rem;
+min-height: 1em;
+font-family: "Public Sans", sans-serif;
+}
+</style>
+<style>
+:root {
+--ice: #eef1f5;
+--surface: #ffffff;
+--ink: #0f2c52;
+--steel: #52627a;
+--steel-soft: #8b98a6;
+--line: #d3dde6;
+--rink-navy: #0f2c52;
+--rink-navy-deep: #081729;
+--faceoff-red: #2360b5;
+--faceoff-red-ink: #184a91;
+--crease-blue: #2360b5;
+--frost: #e4edf8;
+--focus-ring: #2360b5;
+}
+
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) {
+--ice: #081729;
+--surface: #0f2c52;
+--ink: #eef3f8;
+--steel: #adb2b6;
+--steel-soft: #7c93ab;
+--line: #2a4a72;
+--rink-navy: #0f2c52;
+--rink-navy-deep: #050f1c;
+--faceoff-red: #5b9bdc;
+--faceoff-red-ink: #8fc1e8;
+--crease-blue: #5b9bdc;
+--frost: #163a66;
+--focus-ring: #5b9bdc;
+}
+}
+
+:root[data-theme="dark"] {
+--ice: #081729;
+--surface: #0f2c52;
+--ink: #eef3f8;
+--steel: #adb2b6;
+--steel-soft: #7c93ab;
+--line: #2a4a72;
+--rink-navy: #0f2c52;
+--rink-navy-deep: #050f1c;
+--faceoff-red: #5b9bdc;
+--faceoff-red-ink: #8fc1e8;
+--crease-blue: #5b9bdc;
+--frost: #163a66;
+--focus-ring: #5b9bdc;
+}
+
+* { box-sizing: border-box; }
+
+body {
+margin: 0;
+background: var(--ice);
+color: var(--ink);
+font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+line-height: 1.5;
+-webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--crease-blue); }
+
+a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible {
+outline: 2px solid var(--focus-ring);
+outline-offset: 2px;
+border-radius: 3px;
+}
+
+.mono { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; }
+
+header.top {
+background: linear-gradient(180deg, var(--rink-navy) 0%, var(--rink-navy-deep) 100%);
+color: #eef4f9;
+position: relative;
+padding: 2.6rem 1.5rem 2.1rem;
+overflow: hidden;
+}
+
+header.top::after {
+content: "";
+position: absolute;
+left: 0; right: 0; bottom: 0;
+height: 3px;
+background: repeating-linear-gradient(
+90deg,
+var(--faceoff-red) 0 28px,
+transparent 28px 56px
+);
+opacity: 0.85;
+}
+
+.top-inner { max-width: 56rem; margin: 0 auto; }
+
+.eyebrow {
+font-family: "IBM Plex Mono", monospace;
+font-size: 0.72rem;
+letter-spacing: 0.14em;
+text-transform: uppercase;
+color: #9fb7cc;
+margin: 0 0 0.6rem;
+}
+
+h1.title {
+margin: 0 0 0.5rem;
+font-size: clamp(2.4rem, 6vw, 3.6rem);
+line-height: 0.95;
+color: #fff;
+}
+
+.top-sub {
+max-width: 40rem;
+color: #c3d5e3;
+font-size: 1rem;
+margin: 0 0 1.6rem;
+}
+
+.stat-row { display: flex; gap: 1.9rem; flex-wrap: wrap; }
+.stat { display: flex; flex-direction: column; }
+.stat .num { font-size: 1.5rem; line-height: 1; color: #fff; }
+.stat .label {
+font-family: "IBM Plex Mono", monospace;
+font-size: 0.68rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: #8fa6ba;
+margin-top: 0.15rem;
+}
+
+.controls {
+position: sticky;
+top: 0;
+z-index: 20;
+background: color-mix(in srgb, var(--ice) 92%, transparent);
+backdrop-filter: blur(8px);
+border-bottom: 1px solid var(--line);
+}
+
+.controls-inner {
+max-width: 56rem;
+margin: 0 auto;
+padding: 0.8rem 1.5rem;
+display: flex;
+gap: 0.5rem;
+flex-wrap: wrap;
+}
+
+.chip {
+font-family: "IBM Plex Mono", monospace;
+font-size: 0.75rem;
+letter-spacing: 0.03em;
+padding: 0.45rem 0.8rem;
+border-radius: 999px;
+border: 1px solid var(--line);
+background: var(--surface);
+color: var(--steel);
+cursor: pointer;
+white-space: nowrap;
+text-decoration: none;
+}
+
+.chip:hover { border-color: var(--crease-blue); color: var(--crease-blue); }
+
+main {
+max-width: 56rem;
+margin: 0 auto;
+padding: 1.6rem 1.5rem 4rem;
+}
+
+section.category {
+padding-top: 2.6rem;
+scroll-margin-top: 4.7rem;
+}
+
+.cat-head {
+display: flex;
+align-items: baseline;
+gap: 0.9rem;
+border-bottom: 2px solid var(--line);
+padding-bottom: 0.6rem;
+margin-bottom: 1.1rem;
+}
+
+.cat-head .num {
+font-family: "Teko", sans-serif;
+font-size: 2.1rem;
+color: var(--faceoff-red);
+min-width: 1.6ch;
+}
+
+.cat-head h2 {
+margin: 0;
+font-family: "Teko", sans-serif;
+font-weight: 600;
+font-size: 1.9rem;
+flex: 1;
+}
+
+.cat-note {
+font-size: 0.9rem;
+color: var(--steel);
+margin: -0.6rem 0 1.3rem;
+}
+
+.prose h3 {
+font-family: "Teko", sans-serif;
+font-weight: 600;
+font-size: 1.35rem;
+letter-spacing: 0.01em;
+margin: 1.7rem 0 0.5rem;
+color: var(--ink);
+}
+.prose h3:first-child { margin-top: 0; }
+
+.prose h4 {
+font-family: "IBM Plex Mono", monospace;
+font-size: 0.8rem;
+letter-spacing: 0.04em;
+text-transform: uppercase;
+color: var(--faceoff-red-ink);
+margin: 1.1rem 0 0.4rem;
+}
+
+.prose h3.group {
+font-size: 1.6rem;
+color: var(--ink);
+border-left: 4px solid var(--faceoff-red);
+padding-left: 0.7rem;
+margin: 2.1rem 0 1rem;
+}
+.prose h3.group:first-child { margin-top: 0; }
+
+.prose p { margin: 0 0 0.7rem; font-size: 0.96rem; }
+.prose ul, .prose ol { margin: 0 0 0.9rem; padding-left: 1.3rem; }
+.prose li { margin-bottom: 0.4rem; font-size: 0.96rem; }
+.prose strong { color: var(--ink); }
+
+.tag {
+display: inline-block;
+font-family: "IBM Plex Mono", monospace;
+font-size: 0.62rem;
+letter-spacing: 0.05em;
+text-transform: uppercase;
+padding: 0.15rem 0.55rem;
+border-radius: 999px;
+margin-left: 0.5rem;
+vertical-align: middle;
+white-space: nowrap;
+}
+.tag.proposed {
+background: var(--frost);
+color: var(--faceoff-red-ink);
+border: 1px solid var(--crease-blue);
+}
+.tag.addlater {
+background: transparent;
+color: var(--steel);
+border: 1px dashed var(--line);
+}
+
+.callout {
+background: var(--frost);
+border-radius: 8px;
+padding: 0.8rem 1rem;
+font-size: 0.9rem;
+margin: 0.8rem 0 1.2rem;
+}
+.callout strong {
+font-family: "IBM Plex Mono", monospace;
+font-size: 0.68rem;
+letter-spacing: 0.05em;
+text-transform: uppercase;
+color: var(--faceoff-red-ink);
+display: block;
+margin-bottom: 0.3rem;
+}
+
+.grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+gap: 0.8rem;
+}
+.card {
+background: var(--surface);
+border: 1px dashed var(--line);
+border-radius: 10px;
+padding: 0.9rem 1rem 1rem;
+}
+.card h3 {
+margin: 0 0 0.3rem;
+font-family: "Teko", sans-serif;
+font-weight: 600;
+font-size: 1.2rem;
+}
+.card p {
+margin: 0;
+font-size: 0.85rem;
+color: var(--steel);
+}
+
+footer {
+max-width: 56rem;
+margin: 0 auto;
+padding: 1.6rem 1.5rem 3rem;
+border-top: 1px solid var(--line);
+color: var(--steel);
+font-size: 0.82rem;
+}
+
+html { scroll-behavior: smooth; }
+
+.img-link {
+color: inherit;
+text-decoration: underline;
+text-decoration-style: dotted;
+text-underline-offset: 3px;
+cursor: pointer;
+background: none;
+border: none;
+font: inherit;
+padding: 0;
+}
+.img-link:hover { color: var(--crease-blue); }
+
+.lightbox {
+position: fixed;
+inset: 0;
+z-index: 60;
+background: color-mix(in srgb, var(--rink-navy-deep) 92%, transparent);
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 3vh 3vw;
+}
+.lightbox[hidden] { display: none; }
+.lightbox img {
+max-width: 94vw;
+max-height: 90vh;
+border-radius: 10px;
+box-shadow: 0 30px 90px rgba(0,0,0,0.5);
+display: block;
+}
+.lightbox-close {
+position: fixed;
+top: 1rem;
+right: 1.2rem;
+z-index: 5;
+width: 2.5rem;
+height: 2.5rem;
+border-radius: 50%;
+border: 1px solid var(--line);
+background: var(--surface);
+color: var(--ink);
+font-size: 1.2rem;
+cursor: pointer;
+box-shadow: 0 4px 14px rgba(15,44,82,0.2);
+}
+.lightbox-close:hover { border-color: var(--crease-blue); color: var(--crease-blue); }
+
+@media (max-width: 640px) {
+header.top { padding: 2rem 1.1rem 1.6rem; }
+main { padding: 1.2rem 1.1rem 3rem; }
+.controls-inner { padding: 0.7rem 1.1rem; }
+#gate .box { padding: 1.75rem 1.4rem; }
+}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<div id="gate">
+<div class="box">
+<h2>Team Handbook</h2>
+<p>Junior Railers 2014 Select &mdash; enter the password to continue.</p>
+<input type="password" id="gatePw" placeholder="Password" autocomplete="off">
+<button type="button" id="gateBtn">Unlock</button>
+<div class="err" id="gateErr"></div>
+</div>
+</div>
+
+<div id="site-content" style="display:none">
+<header class="top">
+<div class="top-inner">
+<p class="eyebrow">Junior Railers Hockey Club &middot; 2014 Select &middot; 2026-27 Season</p>
+<h1 class="title">Team Handbook</h1>
+<p class="top-sub">Team rules, logistics, and on-ice systems &mdash; one place for players, parents, and coaches. This is a living document: sections get filled in and updated through the season.</p>
+<div class="stat-row">
+<div class="stat"><span class="num">3</span><span class="label">Parts</span></div>
+<div class="stat"><span class="num">Draft</span><span class="label">Status</span></div>
+<div class="stat"><span class="num">Sept 22, 2026</span><span class="label">Last Updated</span></div>
+</div>
+</div>
+</header>
+
+<div class="controls">
+<div class="controls-inner">
+<a class="chip" href="#rules">1 &middot; Team Rules</a>
+<a class="chip" href="#logistics">2 &middot; Logistics</a>
+<a class="chip" href="#systems">3 &middot; Systems</a>
+<a class="chip" href="#open-items">Open Items</a>
+</div>
+</div>
+
+<main>
+
+<section class="category" id="rules">
+<div class="cat-head"><span class="num">1</span><h2>Team Rules &amp; Expectations</h2></div>
+<p class="cat-note">This team is 12-year-olds &mdash; the 12U (Peewee) classification for players born in 2014. Parents remain the main point of contact for logistics and bigger issues, while we're intentionally building each player's confidence to speak up and communicate directly as they get older.</p>
+
+<div class="prose">
+<h3>Communication</h3>
+<ul>
+<li><strong>Parents are the primary point of contact</strong> with coaches for logistics, scheduling conflicts, and anything bigger &mdash; playing time questions, behavior, disagreements. Reach out directly.</li>
+<li>At the same time, we're deliberately building <strong>player voice</strong> as part of this program. Some things are moments we want the player to own &mdash; telling a coach directly that they'll miss a practice, asking a coach a question about something they were told to work on, speaking up for themselves on the bench or in the locker room. A parent can always follow up to confirm, but we want the player taking that first step when it's age-appropriate. 12 is a good age to start building that muscle.</li>
+</ul>
+<div class="callout"><strong>Add later</strong>The specific channel parents use to reach coaches (text, email, team app), and confirmation that coaches' contact info has been shared with families.</div>
+
+<h3>Staying Informed (Crossbar)</h3>
+<ul>
+<li>Check Crossbar regularly &mdash; schedule changes, game/jersey info, and team communications get posted there. At this age, staying on top of it is a shared job: we'd like players checking it with a parent, not just a parent checking it alone.</li>
+<li>Practice plans are typically posted by <strong>2:00 PM on practice days</strong>. Review the plan before you get to the rink &mdash; have a general idea of what we're working on and come prepared.</li>
+</ul>
+
+<h3>Attendance</h3>
+<ul>
+<li><strong>We expect players at practice.</strong> Missing practice can affect playing time in games.</li>
+<li>Real conflicts happen &mdash; school activities, family commitments, other sports &mdash; and that's understood. There's a difference between a legitimate need and something that could have been flagged earlier.</li>
+<li>Parents are responsible for reporting absences and keeping attendance updated in Crossbar. We'd also love to hear it from the player directly when they can &mdash; good practice for speaking up, and it's their hockey.</li>
+</ul>
+<div class="callout"><strong>Add later</strong>How far in advance an absence should be reported.</div>
+
+<h3>Equipment &amp; Uniforms</h3>
+<ul>
+<li>Full equipment at every practice and game &mdash; this includes neck guards. No exceptions.</li>
+<li>Correct jerseys and correct socks for practices and games &mdash; know what we're wearing before you show up.</li>
+<li>Bring <strong>both uniforms (home and away) to every game.</strong> Coaches and players confirm with the opposing team which jersey we're wearing before warmups. Come prepared &mdash; no one, including coaches, should be searching for spare jerseys on game day.</li>
+</ul>
+
+<h3>Playing Time, Lineups &amp; Goalies</h3>
+<ul>
+<li><strong>Playing time is based on merit</strong> &mdash; commitment, effort, attitude, and how a player is performing in practice and games all factor into lineup decisions, the same as at any level of competitive hockey.</li>
+<li>At the same time, every rostered player on this team gets <strong>meaningful ice time.</strong> This isn't shift-by-shift equal, and it isn't a guarantee &mdash; but nobody on this roster is a bystander. Reps are how players develop, and every player on this team is part of what we're building.</li>
+<li><strong>Goalies:</strong> we want our goalies playing full games. We'll alternate goalies through the season and announce who's playing the upcoming weekend at Thursday's practice.
+<ul>
+<li>If we feel a mid-game goalie change could help the team, that can happen. We'll try to prepare goalies for what to expect, but part of being a goalie &mdash; especially if you didn't start &mdash; is being ready to help your team the moment you're called on.</li>
+</ul>
+</li>
+</ul>
+<div class="callout"><strong>Add later</strong>How this team's 16-player roster (14 skaters + 2 goalies) breaks into lines/pairs, and whether there's a formal "alternates" concept the way the 15U team has one.</div>
+
+<h3>Respect &amp; Conduct</h3>
+<ul>
+<li>You represent yourself, your team, the Junior Railers, and your family &mdash; at all times, everywhere: on the ice, on the bench, in the locker room, at school, and at home. Make the right choices.</li>
+<li>Be respectful to teammates, coaches, officials, opponents, and rink staff.</li>
+<li>Support each other &mdash; on the bench, in the room, and outside the rink.</li>
+</ul>
+
+<h3>Physical Play at This Level</h3>
+<ul>
+<li>2014 Select plays at the <strong>12U (Peewee)</strong> level. USA Hockey rules allow body contact &mdash; competing for position, angling a puck carrier off the play, leaning into a battle along the boards &mdash; but <strong>body checking is not legal in games until 14U (Bantam).</strong></li>
+<li>We coach hard, controlled positioning and puck battles, not hits. Reckless or out-of-control contact &mdash; even when it isn't intentional &mdash; gets treated as a safety issue first, and as a discipline issue if it becomes a pattern.</li>
+</ul>
+
+<h3>Locker Room Policy</h3>
+<p>There's no other sport where you spend as much time together, or have anything quite like the atmosphere of the locker room. It can also be dangerous: skate blades are sharp, and it doesn't take much for horsing around to turn into a real injury. Be respectful of each other and the space, and enjoy it for what it is.</p>
+<ul>
+<li>A screened adult team representative monitors the locker room at all team events, consistent with USA Hockey / SafeSport policy &mdash; for players' safety and for parents' peace of mind.</li>
+<li><strong>No parents in the locker room</strong> &mdash; players, coaches, and approved team personnel only. No exceptions.</li>
+<li>No cell phones or other recording-capable devices used in the locker room.</li>
+<li>No outside visitors.</li>
+<li><strong>Locker rooms must be left clean</strong> &mdash; every time, every rink.</li>
+</ul>
+
+<h3>Skates &amp; Self-Sufficiency</h3>
+<ul>
+<li><strong>Players tie their own skates.</strong> Because parents aren't in the locker room, a player who needs help ties/laces has to step out to get it &mdash; help doesn't happen inside the room.</li>
+<li><strong>Goal: by Thanksgiving, no player on this team needs help tying their skates.</strong> This is the same independence-building philosophy as Communication above, applied to something very concrete &mdash; 12 is a great age to build this skill for good.</li>
+</ul>
+<div class="callout"><strong>Confirm</strong>Whether there's a consistent spot outside the locker room at each rink for skate-tying help, so parents/players know where to go.</div>
+
+<h3>Unacceptable Behavior</h3>
+<p>Not acceptable from anyone on this team, at any team activity (practice, game, tournament, locker room, or team travel):</p>
+<ul>
+<li>Disrespect toward officials, coaches, teammates, or opponents &mdash; arguing calls, taunting, verbal abuse.</li>
+<li>Fighting, or any attempt to injure another player, outside what happens within the normal course of play.</li>
+<li><strong>Bullying, hazing, or excluding a teammate.</strong></li>
+<li>Discriminatory language or behavior of any kind.</li>
+<li><strong>Phones or recording devices used in the locker room.</strong></li>
+<li>Unsportsmanlike conduct that reflects poorly on the team.</li>
+<li>Ignoring coaching instructions or team rules.</li>
+<li>Showing up late or unprepared without communicating with a coach in advance.</li>
+</ul>
+
+<h3>Discipline &amp; Suspensions</h3>
+<p>A tiered approach. Coaches always retain discretion to escalate based on severity &mdash; this is a floor, not a rigid formula.</p>
+<p>This isn't limited to team events. How you treat people at school and at home matters here too.</p>
+
+<h4>Minor offenses</h4>
+<p>(disrespectful remarks, arguing with an official, not following equipment/uniform rules, locker room disruption, no-show without any notice)</p>
+<ol>
+<li>First time: warning from a coach, conversation with the player (and, at this age, a heads-up to the parent).</li>
+<li>Second time: expect to sit out.</li>
+</ol>
+
+<h4>Serious offenses</h4>
+<p>(fighting or instigating, abusive language/gestures, deliberate attempt to injure, hazing/bullying, unauthorized recording in the locker room)</p>
+<ul>
+<li>Minimum 1&ndash;2 game suspension, at the coaching staff's discretion.</li>
+<li>A repeat serious offense adds additional games or removal from the team.</li>
+</ul>
+
+<h4>Zero-tolerance offenses</h4>
+<p>(physical violence beyond the play of the game, harassment or discrimination, hazing that causes harm)</p>
+<ul>
+<li>Immediate removal from the team event (practice, game, or otherwise).</li>
+<li>Multi-game suspension up to removal from the team for the season, at the coaching staff's and club leadership's discretion.</li>
+<li>Handled per USA Hockey SafeSport policy where applicable.</li>
+</ul>
+</div>
+</section>
+
+<section class="category" id="logistics">
+<div class="cat-head"><span class="num">2</span><h2>Logistics</h2></div>
+
+<div class="prose">
+<h3>Before Games</h3>
+<ul>
+<li><strong>Arrive no later than 45 minutes before game time.</strong></li>
+<li><strong>Off-ice warmup starts 40 minutes before game time.</strong> Everyone participates (goalies are the only exception, if they have their own routine).</li>
+<li>Bring both uniforms to every game. Coaches/players confirm with the opposing team which jersey we're wearing and communicate that before warmups.</li>
+<li>Be <strong>fully dressed before the Zamboni is on the ice.</strong> By 10 minutes before game time, give full attention as coaches talk through the game plan &mdash; focus areas, how we can win, expectations.</li>
+</ul>
+<div class="callout"><strong>Confirm</strong>Whether the 45-minute arrival / 40-minute warmup timing is right for this team, and whether this team has designated captains leading warmup or coaches run it directly at this age.</div>
+
+<h3>After Games</h3>
+<ul>
+<li>When coaches enter the locker room, freeze &mdash; stop getting undressed and be ready to actively listen.</li>
+<li>Be supportive of your teammates. Not everyone makes the perfect play every time during a game &mdash; there's no calling out teammates.</li>
+<li>Discuss the game with constructive criticism, and continue to support each other.</li>
+<li>Move on: be upset if we lost, but understand it and learn from it. Be excited about a win, but stay humble &mdash; there's always room for growth.</li>
+</ul>
+
+<h3>Practice</h3>
+<ul>
+<li>Practice plans are posted by 2:00 PM on practice days (see Staying Informed above). Come prepared, with a general understanding of the plan for the day.</li>
+<li>Always bring effort &mdash; practice at high speed and high intensity, and challenge each other.</li>
+<li>Be present, both physically and mentally. Ask questions &mdash; this is the time to learn.</li>
+<li>Practice will be fun at times, fast at times, and slow or repetitive at times as we work through systems &mdash; understand that, and embrace it.</li>
+<li>If a coach is explaining something to one player, everyone else should be listening too &mdash; we don't want to repeat the same explanation multiple times.</li>
+<li>Help set up and transition between drills &mdash; pucks, nets, and other equipment &mdash; as we move from one drill to the next.</li>
+<li>Same equipment standard as games: full gear including neck guards, correct jerseys and socks.</li>
+</ul>
+<div class="callout"><strong>Add later</strong>Rink-specific logistics (e.g., the 15U team's "bring the puck bag to the Coaches Room, door code" note) if this team has an equivalent.</div>
+</div>
+</section>
+
+<section class="category" id="systems">
+<div class="cat-head"><span class="num">3</span><h2>Hockey Systems &amp; Strategy</h2></div>
+<p class="cat-note">This section is intentionally on hold until Part 1 and Part 2 are locked in. Keeping the same shape as the 15U handbook so it's easy to fill in once ready.</p>
+
+<div class="prose">
+<h3 class="group">Even Strength</h3>
+<div class="callout"><strong>Add later</strong>Forecheck.</div>
+<div class="callout"><strong>Add later</strong>Neutral Zone &mdash; Regroup / Offense.</div>
+<div class="callout"><strong>Add later</strong>Neutral Zone Forecheck.</div>
+<div class="callout"><strong>Add later</strong>Defensive Zone.</div>
+
+<h3 class="group">Special Teams</h3>
+<div class="callout"><strong>Add later</strong>Penalty Kill &mdash; In Zone.</div>
+<div class="callout"><strong>Add later</strong>Penalty Kill &mdash; Forecheck.</div>
+<div class="callout"><strong>Add later</strong>Power Play &mdash; Breakout.</div>
+<div class="callout"><strong>Add later</strong>Power Play &mdash; In Zone.</div>
+
+<h3 class="group">Faceoffs</h3>
+<div class="callout"><strong>Add later</strong>Defensive Zone Faceoffs.</div>
+<div class="callout"><strong>Add later</strong>Offensive Zone Faceoffs.</div>
+</div>
+</section>
+
+<section class="category" id="open-items">
+<div class="cat-head"><span class="num">&#9998;</span><h2>Open Items / To Decide</h2></div>
+<div class="prose">
+<ul>
+<li>Confirm the parent-to-coach communication channel(s) and share coach contact info with families.</li>
+<li>How far in advance an absence should be reported.</li>
+<li>Roster-specific line/pairing breakdown for the 16-player roster (14 skaters + 2 goalies), and whether an "alternates" concept applies the way it does for 15U.</li>
+<li>Confirm whether this team has designated captains, and the arrival/warmup timing.</li>
+<li>Rink-specific logistics equivalent to the 15U "puck bag / Coaches Room door code" note, if any.</li>
+<li>Whether there's a consistent spot outside the locker room at each rink for skate-tying help.</li>
+<li>Part 3 (Hockey Systems) &mdash; build out once you're ready to specify what this team actually runs.</li>
+<li>Presenter Mode link &mdash; add once the Players/Parents Meeting presentations exist for this team.</li>
+<li>Anything else from the 15U source material not yet ported (e.g., tournament travel expectations for the Quebec City trip).</li>
+</ul>
+</div>
+</section>
+
+</main>
+
+<footer>
+Maintained by Coach Matt Cunha for 2014 Select &middot; Junior Railers Hockey Club. Last updated September 22, 2026 &mdash; a work in progress, updated as the season goes.
+</footer>
+</div>
+
+<div class="lightbox" id="lightbox" hidden>
+<button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close image">&#10005;</button>
+<img id="lightboxImg" src="" alt="">
+</div>
+
+<script>
+(function () {
+var HASH = "978d657be20a82b87941d32cb19f89140c2996a17c3cf5ce51843b50fa5074f2";
+var STORE_KEY = "jrhc-2014-select-handbook-unlocked";
+
+function sha256(text) {
+var enc = new TextEncoder().encode(text);
+return crypto.subtle.digest("SHA-256", enc).then(function (buf) {
+return Array.from(new Uint8Array(buf)).map(function (b) {
+return b.toString(16).padStart(2, "0");
+}).join("");
+});
+}
+
+function reveal() {
+document.getElementById("gate").style.display = "none";
+document.getElementById("site-content").style.display = "";
+}
+
+function tryUnlock() {
+var val = document.getElementById("gatePw").value;
+sha256(val).then(function (digest) {
+if (digest === HASH) {
+try { localStorage.setItem(STORE_KEY, "1"); } catch (e) {}
+reveal();
+} else {
+document.getElementById("gateErr").textContent = "That's not it &mdash; try again.";
+}
+});
+}
+
+var already = false;
+try { already = localStorage.getItem(STORE_KEY) === "1"; } catch (e) {}
+if (already) {
+reveal();
+} else {
+document.getElementById("gateBtn").addEventListener("click", tryUnlock);
+document.getElementById("gatePw").addEventListener("keydown", function (e) {
+if (e.key === "Enter") tryUnlock();
+});
+document.getElementById("gatePw").focus();
+}
+})();
+
+(function () {
+var lightbox = document.getElementById("lightbox");
+var lightboxImg = document.getElementById("lightboxImg");
+
+function openLightbox(src, alt) {
+lightboxImg.src = src;
+lightboxImg.alt = alt || "";
+lightbox.hidden = false;
+}
+function closeLightbox() {
+lightbox.hidden = true;
+lightboxImg.src = "";
+}
+
+document.addEventListener("click", function (e) {
+var trigger = e.target.closest(".img-link");
+if (trigger) {
+e.preventDefault();
+openLightbox(trigger.getAttribute("data-img"), trigger.textContent);
+}
+});
+document.getElementById("lightboxClose").addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", function (e) {
+if (e.target === lightbox) closeLightbox();
+});
+document.addEventListener("keydown", function (e) {
+if (e.key === "Escape" && !lightbox.hidden) closeLightbox();
+});
+})();
+</script>
